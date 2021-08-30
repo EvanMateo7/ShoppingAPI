@@ -1,0 +1,7 @@
+﻿
+
+Add-Migration
+
+Update-Database
+
+Scaffold-DbContext "Server=EVANDESKTOP\SQLEXPRESS;Initial Catalog=ShoppingAPIDB;User ID=ShoppingAPI;Password=admin;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Entities
