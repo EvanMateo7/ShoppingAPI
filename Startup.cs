@@ -15,7 +15,10 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using ShoppingAPI.Areas.Identity;
 using ShoppingAPI.Data;
+using ShoppingAPI.Data.Repositories;
 using ShoppingAPI.Domain;
+using ShoppingAPI.Domain.Repository;
+using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 using ShoppingAPI.Pages;
 using System;
 using System.Collections.Generic;
@@ -58,8 +61,12 @@ namespace ShoppingAPI
 
             // DI Services
             services.AddScoped<IUserClaimsPrincipalFactory<AppUser>, AppUserClaimsPrincipalFactory>();
-            //services.AddScoped<IClaimsTransformation, AppClaimsTransformation>();
             services.AddScoped<SignInManager<AppUser>, AppSignInManager<AppUser>>();
+            //services.AddScoped<IClaimsTransformation, AppClaimsTransformation>();
+
+            // Repositories
+            services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddScoped<IProductRepository, ProductRepository>();
 
             services.AddAuthentication()
                 .AddGoogle(_optionConfig.ConfigureGoogleOptions);
@@ -71,7 +78,11 @@ namespace ShoppingAPI
             {
                 options.AddPolicy("test", policy => policy.RequireClaim("test"));
             });
-            services.AddControllers();
+            services.AddControllers()
+              .AddNewtonsoftJson(x =>
+              {
+                  x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+              });
             services.AddRazorPages();
         }
 
