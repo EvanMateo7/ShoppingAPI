@@ -19,6 +19,7 @@ using ShoppingAPI.Data.Repositories;
 using ShoppingAPI.Domain;
 using ShoppingAPI.Domain.Repository;
 using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
+using AutoMapper;
 using ShoppingAPI.Pages;
 using System;
 using System.Collections.Generic;
@@ -63,6 +64,7 @@ namespace ShoppingAPI
             services.AddScoped<IUserClaimsPrincipalFactory<AppUser>, AppUserClaimsPrincipalFactory>();
             services.AddScoped<SignInManager<AppUser>, AppSignInManager<AppUser>>();
             //services.AddScoped<IClaimsTransformation, AppClaimsTransformation>();
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             // Repositories
             services.AddScoped<IOrderRepository, OrderRepository>();
