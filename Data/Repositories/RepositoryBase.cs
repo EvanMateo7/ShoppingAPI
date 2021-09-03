@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ShoppingAPI.Domain.Repository;
 
@@ -20,9 +21,10 @@ namespace ShoppingAPI.Data.Repositories
       return _appContext.Set<T>().Where(expression).AsNoTracking();
     }
 
-    public void Create(T entity)
+    public async Task<Task> CreateAsync(T entity)
     {
-      _appContext.Set<T>().Add(entity);
+      await _appContext.Set<T>().AddAsync(entity);
+      return _appContext.SaveChangesAsync();
     }
 
     public void Update(T entity)

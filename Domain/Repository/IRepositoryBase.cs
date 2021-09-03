@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace ShoppingAPI.Domain.Repository
 {
@@ -8,7 +9,7 @@ namespace ShoppingAPI.Domain.Repository
   {
     IQueryable<T> Find(Expression<Func<T, bool>> expression);
 
-    void Create(T entity);
+    Task<Task> CreateAsync(T entity);
 
     void Update(T entity);
     

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +12,7 @@ using ShoppingAPI.Domain.Repository;
 namespace ShoppingAPI.Controllers
 {
   [ApiController]
-  [Route("api")]
+  [Route("api/product")]
   public class ProductController : ControllerBase
   {
     private readonly UserManager<AppUser> _userManager;
@@ -27,15 +28,28 @@ namespace ShoppingAPI.Controllers
       _mapper = mapper;
     }
 
-    [HttpGet("products")]
-    public ActionResult GetProducts()
+    [HttpGet("{name}")]
+    public ActionResult GetProduct(string name)
     {
-      var products = _productRepo
-                      .Find(p => p.Name == "chair")
+      var product = _productRepo
+                      .Find(p => p.Name == name)
                       .Include(p => p.User)
-                      .ToList();
-      var productsResults = _mapper.Map<IEnumerable<ProductReadDTO>>(products);
-      return Ok(productsResults);
+                      .FirstOrDefault();
+
+      var productResult = _mapper.Map<ProductReadDTO>(product);
+      return Ok(productResult);
+    }
+
+    [HttpPost]
+    public async Task<ActionResult> PostProduct(ProductCreateDTO product)
+    {
+      var newProduct = _mapper.Map<Product>(product);
+
+      await _productRepo.CreateAsync(newProduct);
+
+      var newProductRead = _mapper.Map<ProductReadDTO>(newProduct);
+
+      return CreatedAtAction(nameof(GetProduct), new { name = newProduct.Name }, newProductRead);
     }
   }
 }
