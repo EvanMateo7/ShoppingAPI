@@ -21,10 +21,10 @@ namespace ShoppingAPI.Data.Repositories
       return _appContext.Set<T>().Where(expression).AsNoTracking();
     }
 
-    public async Task<Task> CreateAsync(T entity)
+    public int Create(T entity)
     {
-      await _appContext.Set<T>().AddAsync(entity);
-      return _appContext.SaveChangesAsync();
+      _appContext.Set<T>().Add(entity);
+      return _appContext.SaveChanges();
     }
 
     public void Update(T entity)

@@ -9,7 +9,7 @@ namespace ShoppingAPI.Domain.Repository
   {
     IQueryable<T> Find(Expression<Func<T, bool>> expression);
 
-    Task<Task> CreateAsync(T entity);
+    int Create(T entity);
 
     void Update(T entity);
     
