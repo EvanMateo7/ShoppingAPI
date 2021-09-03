@@ -24,7 +24,7 @@ namespace ShoppingAPI.Domain
 
         public decimal Price { get; private set; }
 
-        public DateTime CreatedAt { get; private set; }
+        public DateTime CreatedAt { get; private set; } = DateTime.Today;
 
         public ICollection<OrderProduct> OrderProducts { get; private set; }
     }
