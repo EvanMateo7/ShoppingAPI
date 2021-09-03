@@ -1,6 +1,4 @@
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -41,11 +39,18 @@ namespace ShoppingAPI.Controllers
     }
 
     [HttpPost]
-    public async Task<ActionResult> PostProduct(ProductCreateDTO product)
+    public ActionResult PostProduct(ProductCreateDTO product)
     {
       var newProduct = _mapper.Map<Product>(product);
 
-      await _productRepo.CreateAsync(newProduct);
+      try
+      {
+        var num = _productRepo.Create(newProduct);   
+      }
+      catch (DbUpdateException)
+      {
+        return Problem();
+      }
 
       var newProductRead = _mapper.Map<ProductReadDTO>(newProduct);
 
