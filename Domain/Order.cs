@@ -18,7 +18,7 @@ namespace ShoppingAPI.Domain
         public DateTime? FullfilledAt { get; private set; }
 #nullable disable
 
-        public DateTime CreatedAt { get; private set; } = DateTime.Today;
+        public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
 
         public ICollection<OrderProduct> OrderProducts { get; private set; }
     }
