@@ -11,6 +11,8 @@ namespace ShoppingAPI.Domain
     {
         public int Id { get; private set; }
 
+        public Guid ProductId { get; private set; }
+
         public string UserId { get; private set; }
         public AppUser User { get; private set; }
 

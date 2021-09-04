@@ -14,6 +14,8 @@ namespace ShoppingAPI.Data
         {
             builder.Property(e => e.Name).IsRequired();
 
+            builder.Property(p => p.ProductId).HasDefaultValueSql("newid()");
+
             builder.Property(e => e.Name).HasMaxLength(69);
 
             builder.Property(e => e.Price).HasColumnType("decimal(18, 2)");
