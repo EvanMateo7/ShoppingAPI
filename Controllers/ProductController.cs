@@ -86,5 +86,20 @@ namespace ShoppingAPI.Controllers
       var patchedTargetProduct = _mapper.Map<ProductReadDTO>(targetProduct);
       return CreatedAtAction(nameof(GetProductByName), new { name = patchedTargetProduct.Name }, patchedTargetProduct);
     }
+
+    [HttpDelete]
+    public ActionResult DeleteProduct(Guid productId)
+    {
+      var targetProduct = _productRepo.Find(p => p.ProductId == productId).FirstOrDefault();
+
+      if (targetProduct == null)
+      {
+        return NotFound();
+      }
+
+      _productRepo.Delete(targetProduct);
+
+      return NoContent();
+    }
   }
 }
