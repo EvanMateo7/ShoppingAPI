@@ -30,11 +30,13 @@ namespace ShoppingAPI.Data.Repositories
     public void Update(T entity)
     {
       _appContext.Set<T>().Update(entity);
+      _appContext.SaveChanges();
     }
 
     public void Delete(T entity)
     {
       _appContext.Set<T>().Remove(entity);
+      _appContext.SaveChanges();
     }
   }
 }

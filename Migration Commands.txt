@@ -1,7 +1,9 @@
 ﻿
 
 Add-Migration
+dotnet ef migrations add
 
 Update-Database
+dotnet ef database update
 
 Scaffold-DbContext "Server=EVANDESKTOP\SQLEXPRESS;Initial Catalog=ShoppingAPIDB;User ID=ShoppingAPI;Password=admin;" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Entities

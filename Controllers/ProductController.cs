@@ -1,6 +1,8 @@
+using System;
 using System.Linq;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ShoppingAPI.Data.Mappings;
@@ -27,7 +29,7 @@ namespace ShoppingAPI.Controllers
     }
 
     [HttpGet("{name}")]
-    public ActionResult GetProduct(string name)
+    public ActionResult GetProductByName(string name)
     {
       var product = _productRepo
                       .Find(p => p.Name == name)
@@ -39,7 +41,7 @@ namespace ShoppingAPI.Controllers
     }
 
     [HttpPost]
-    public ActionResult PostProduct(ProductCreateDTO product)
+    public ActionResult CreateProduct(ProductCreateDTO product)
     {
       var newProduct = _mapper.Map<Product>(product);
 
@@ -54,7 +56,35 @@ namespace ShoppingAPI.Controllers
 
       var newProductRead = _mapper.Map<ProductReadDTO>(newProduct);
 
-      return CreatedAtAction(nameof(GetProduct), new { name = newProduct.Name }, newProductRead);
+      return CreatedAtAction(nameof(GetProductByName), new { name = newProduct.Name }, newProductRead);
+    }
+
+    [HttpPatch("{productId}")]
+    public ActionResult UpdateProduct(Guid productId, JsonPatchDocument<ProductCreateDTO> productPatchDoc)
+    {
+      var targetProduct = _productRepo.Find(p => p.ProductId == productId).FirstOrDefault();
+
+      if (targetProduct == null)
+      {
+        return NotFound();
+      }
+
+      // Create a ProductCreateDTO from target product
+      var productToPatch = _mapper.Map<ProductCreateDTO>(targetProduct);
+
+      // Apply patch
+      productPatchDoc.ApplyTo(productToPatch, ModelState);
+      if(!TryValidateModel(productToPatch))
+      {
+          return ValidationProblem(ModelState);
+      }
+
+      // Update product
+      _mapper.Map(productToPatch, targetProduct);
+      _productRepo.Update(targetProduct);
+
+      var patchedTargetProduct = _mapper.Map<ProductReadDTO>(targetProduct);
+      return CreatedAtAction(nameof(GetProductByName), new { name = patchedTargetProduct.Name }, patchedTargetProduct);
     }
   }
 }
