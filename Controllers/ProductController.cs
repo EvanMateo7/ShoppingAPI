@@ -28,13 +28,18 @@ namespace ShoppingAPI.Controllers
       _mapper = mapper;
     }
 
-    [HttpGet("{name}")]
-    public ActionResult GetProductByName(string name)
+    [HttpGet("{id}")]
+    public ActionResult GetProductById(Guid id)
     {
       var product = _productRepo
-                      .Find(p => p.Name == name)
+                      .Find(p => p.ProductId == id)
                       .Include(p => p.User)
                       .FirstOrDefault();
+
+      if (product == null)
+      {
+        return NotFound();
+      }
 
       var productResult = _mapper.Map<ProductReadDTO>(product);
       return Ok(productResult);
@@ -56,7 +61,7 @@ namespace ShoppingAPI.Controllers
 
       var newProductRead = _mapper.Map<ProductReadDTO>(newProduct);
 
-      return CreatedAtAction(nameof(GetProductByName), new { name = newProduct.Name }, newProductRead);
+      return CreatedAtAction(nameof(GetProductById), new { id = newProduct.ProductId }, newProductRead);
     }
 
     [HttpPatch("{productId}")]
@@ -84,7 +89,7 @@ namespace ShoppingAPI.Controllers
       _productRepo.Update(targetProduct);
 
       var patchedTargetProduct = _mapper.Map<ProductReadDTO>(targetProduct);
-      return CreatedAtAction(nameof(GetProductByName), new { name = patchedTargetProduct.Name }, patchedTargetProduct);
+      return CreatedAtAction(nameof(GetProductById), new { name = patchedTargetProduct.Name }, patchedTargetProduct);
     }
 
     [HttpDelete]
