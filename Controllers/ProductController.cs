@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ShoppingAPI.Data.Mappings;
+using ShoppingAPI.Data.Util;
 using ShoppingAPI.Domain;
 using ShoppingAPI.Domain.Repository;
 
@@ -42,6 +44,18 @@ namespace ShoppingAPI.Controllers
       }
 
       var productResult = _mapper.Map<ProductReadDTO>(product);
+      return Ok(productResult);
+    }
+
+    [HttpGet]
+    public ActionResult GetProducts([FromQuery] SearchPaginationQuery pageQuery)
+    {
+      var product = _productRepo
+                      .QueryAll(pageQuery)
+                      .Include(p => p.User)
+                      .ToList();
+
+      var productResult = _mapper.Map<IEnumerable<ProductReadDTO>>(product);
       return Ok(productResult);
     }
 

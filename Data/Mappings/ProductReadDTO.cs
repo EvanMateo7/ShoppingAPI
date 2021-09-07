@@ -11,6 +11,8 @@ namespace ShoppingAPI.Data.Mappings
     {
         public int Id { get; private set; }
 
+        public Guid ProductId { get; set; }
+
         public AppUserReadDTO User { get; private set; }
 
         public string Name { get; private set; }
