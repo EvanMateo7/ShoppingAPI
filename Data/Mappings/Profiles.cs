@@ -11,8 +11,11 @@ namespace ShoppingAPI.Data.Mappings
 
             // Domain -> DTO
             CreateMap<AppUser, AppUserReadDTO>();
+
             CreateMap<Product, ProductReadDTO>();
             CreateMap<Product, ProductCreateDTO>();
+
+            CreateMap<Order, OrderReadDTO>();
 
             // DTO -> Domain
             CreateMap<ProductCreateDTO, Product>()
