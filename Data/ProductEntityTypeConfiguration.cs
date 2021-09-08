@@ -25,6 +25,8 @@ namespace ShoppingAPI.Data
                 .HasForeignKey(d => d.UserId);
 
             builder.HasIndex(e => e.UserId, "IX_Products_UserId");
+            
+            builder.HasIndex(p => p.ProductId).IsUnique();
         }
     }
 }
