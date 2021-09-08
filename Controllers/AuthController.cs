@@ -17,19 +17,19 @@ using System.Threading.Tasks;
 namespace ShoppingAPI.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
-    public class ShoppingController : ControllerBase
+    [Route("auth")]
+    public class AuthController : ControllerBase
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly AppSignInManager<AppUser> _signInManager;
-        public ShoppingController(UserManager<AppUser> userManager, 
+        public AuthController(UserManager<AppUser> userManager, 
                                   AppSignInManager<AppUser> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
         }
 
-        [HttpGet("~/auth/signin/google")]
+        [HttpGet("signin/google")]
         public IActionResult AuthSignInGoogle()
         {
             var provider = GoogleDefaults.AuthenticationScheme;
@@ -38,7 +38,7 @@ namespace ShoppingAPI.Controllers
             return Challenge(properties, provider);
         }
 
-        [HttpGet("~/auth/signin/response")]
+        [HttpGet("signin/response")]
         public async Task<IActionResult> AuthSignInResponse()
         {
             var externalLoginInfo = await _signInManager.GetExternalLoginInfoAsync();
@@ -64,14 +64,14 @@ namespace ShoppingAPI.Controllers
             return Problem();
         }
 
-        [HttpGet("~/auth/signout")]
+        [HttpGet("signout")]
         public async Task<IActionResult> AuthSignOut()
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction(nameof(AuthUserClaims));
         }
 
-        [HttpGet("~/auth/user/claims")]
+        [HttpGet("user/claims")]
         public ActionResult AuthUserClaims()
         {
             var claims = User.Claims.Select(c => new { c.Type, c.Issuer, c.Value }).ToList();
