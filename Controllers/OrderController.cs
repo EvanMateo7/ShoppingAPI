@@ -1,12 +1,14 @@
 
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ShoppingAPI.Data.Mappings;
+using ShoppingAPI.Data.Util;
 using ShoppingAPI.Domain;
 using ShoppingAPI.Domain.Repository;
 
@@ -33,7 +35,7 @@ namespace ShoppingAPI.Controllers
     public ActionResult GetOrderById(Guid id)
     {
       var order = _orderRepo
-                      .Find(p => p.OrderId == id)
+                      .Find(o => o.OrderId == id)
                       .FirstOrDefault();
 
       if (order == null)
@@ -43,6 +45,18 @@ namespace ShoppingAPI.Controllers
 
       var orderResult = _mapper.Map<OrderReadDTO>(order);
       return Ok(orderResult);
+    }
+
+    // TODO: Use Authorization instead of userId
+    [HttpGet]
+    public ActionResult GetOrders(string userId)
+    {
+      var orders = _orderRepo
+                      .Find(o => o.UserId == userId)
+                      .ToList();
+
+      var ordersResult = _mapper.Map<IEnumerable<OrderReadDTO>>(orders);
+      return Ok(ordersResult);
     }
   }
 }
