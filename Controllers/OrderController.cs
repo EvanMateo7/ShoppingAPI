@@ -58,5 +58,15 @@ namespace ShoppingAPI.Controllers
       var ordersResult = _mapper.Map<IEnumerable<OrderReadDTO>>(orders);
       return Ok(ordersResult);
     }
+
+    [HttpPost]
+    public ActionResult CreateOrder(OrderCreateDTO orderCreate)
+    {
+      var orderCreated = _orderRepo.Create(orderCreate.ProductIDs);
+
+      var orderReadDTO = _mapper.Map<OrderReadDTO>(orderCreated);
+
+      return CreatedAtAction(nameof(GetOrders), new { userId = orderCreated.UserId }, orderReadDTO);
+    }
   }
 }

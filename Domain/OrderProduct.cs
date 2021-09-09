@@ -20,5 +20,17 @@ namespace ShoppingAPI.Domain
         public decimal Price { get; private set; }
 
         public float Quantity { get; private set; }
+
+        public OrderProduct()
+        {
+        }
+
+        public OrderProduct(int orderId, Product product)
+        {
+          OrderId = orderId;
+          ProductId = product.Id;
+          Price = product.Price;
+          Quantity = product.Quantity;
+        }
     }
 }
