@@ -3,11 +3,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ShoppingAPI.Data.Mappings;
+using ShoppingAPI.Data.Repositories.Exceptions;
 using ShoppingAPI.Data.Util;
 using ShoppingAPI.Domain;
 using ShoppingAPI.Domain.Repository;
@@ -62,7 +64,18 @@ namespace ShoppingAPI.Controllers
     [HttpPost]
     public ActionResult CreateOrder(OrderCreateDTO orderCreate)
     {
-      var orderCreated = _orderRepo.Create(orderCreate.ProductIDs);
+      Order orderCreated = null;
+      try
+      {
+        orderCreated = _orderRepo.Create(orderCreate.ProductIDs);
+      }
+      catch (ProductDoesNotExist e)
+      {
+        return BadRequest(new APIResponse() { 
+          Message = e.Message,
+          Data = e.ProductIds
+        });
+      }
 
       var orderReadDTO = _mapper.Map<OrderReadDTO>(orderCreated);
 

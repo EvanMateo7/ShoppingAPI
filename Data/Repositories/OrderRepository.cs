@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ShoppingAPI.Data.Mappings;
+using ShoppingAPI.Data.Repositories.Exceptions;
 using ShoppingAPI.Domain;
 using ShoppingAPI.Domain.Repository;
 
@@ -26,7 +27,7 @@ namespace ShoppingAPI.Data.Repositories
       var nonExistingProducts = productIds.Except(ids);
       if (nonExistingProducts.Count() > 0)
       {
-        throw new Exception();
+        throw new ProductDoesNotExist(nonExistingProducts);
       }
 
       using var transaction = _appContext.Database.BeginTransaction();
