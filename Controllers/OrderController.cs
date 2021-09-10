@@ -81,5 +81,26 @@ namespace ShoppingAPI.Controllers
 
       return CreatedAtAction(nameof(GetOrders), new { userId = orderCreated.UserId }, orderReadDTO);
     }
+
+    [HttpPost("{orderId}")]
+    public ActionResult AddProduct(Guid orderId, Guid productId)
+    {
+      Order order = null;
+      try
+      {
+        order = _orderRepo.AddProduct(orderId, productId);   
+      }
+      catch (DoesNotExist e)
+      {
+        return BadRequest(new APIResponse() { 
+          Message = e.Message,
+          Data = e.Ids
+        });
+      }
+
+      var orderReadDTO = _mapper.Map<OrderReadDTO>(order);
+
+      return CreatedAtAction(nameof(GetOrders), new { userId = order.UserId }, orderReadDTO);
+    }
   }
 }

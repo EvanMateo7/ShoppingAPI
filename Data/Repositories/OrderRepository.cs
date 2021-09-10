@@ -58,5 +58,33 @@ namespace ShoppingAPI.Data.Repositories
         throw new Exception();
       }
     }
+
+    public Order AddProduct(Guid orderId, Guid productId)
+    {
+      var order = _appContext.Orders
+                      .Where(o => o.OrderId == orderId)
+                      .Include(o => o.OrderProducts)
+                      .FirstOrDefault();
+
+      var product = _appContext.Products
+                      .Where(p => p.ProductId == productId)
+                      .FirstOrDefault();
+
+      if (order == null)
+      {
+        throw new DoesNotExist<Order>(new List<Guid> { orderId });
+      }
+      if (product == null)
+      {
+        throw new DoesNotExist<Product>(new List<Guid> { productId });
+      }
+
+      var newOrderProduct = new OrderProduct(order.Id, product);
+
+      order.OrderProducts.Add(newOrderProduct);
+      _appContext.SaveChanges();
+
+      return order;
+    }
   }
 }
