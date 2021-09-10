@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ShoppingAPI.Domain
 {
-    public class Product
+    public class Product : IDomainEntity
     {
         public int Id { get; private set; }
 

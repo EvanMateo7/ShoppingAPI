@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ShoppingAPI.Domain
 {
-    public class AppUser : IdentityUser
+    public class AppUser : IdentityUser, IDomainEntity
     {
         public string First_Name { get; private set; }
 
