@@ -69,11 +69,11 @@ namespace ShoppingAPI.Controllers
       {
         orderCreated = _orderRepo.Create(orderCreate.ProductIDs);
       }
-      catch (ProductDoesNotExist e)
+      catch (DoesNotExist<Product> e)
       {
         return BadRequest(new APIResponse() { 
           Message = e.Message,
-          Data = e.ProductIds
+          Data = e.Ids
         });
       }
 
