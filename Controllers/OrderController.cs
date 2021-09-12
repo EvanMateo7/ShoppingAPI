@@ -12,6 +12,7 @@ using ShoppingAPI.Data.Mappings;
 using ShoppingAPI.Data.Repositories.Exceptions;
 using ShoppingAPI.Data.Util;
 using ShoppingAPI.Domain;
+using ShoppingAPI.Domain.Exceptions;
 using ShoppingAPI.Domain.Repository;
 
 namespace ShoppingAPI.Controllers
@@ -83,18 +84,27 @@ namespace ShoppingAPI.Controllers
     }
 
     [HttpPost("{orderId}")]
-    public ActionResult AddProduct(Guid orderId, Guid productId)
+    public ActionResult AddProduct(Guid orderId, OrderProductCreateDTO orderProductCreate)
     {
       Order order = null;
       try
       {
-        order = _orderRepo.AddProduct(orderId, productId);   
+        order = _orderRepo.AddProduct(orderId, 
+                                      orderProductCreate.ProductId,
+                                      orderProductCreate.Quantity);
       }
       catch (DoesNotExist e)
       {
         return BadRequest(new APIResponse() { 
           Message = e.Message,
           Data = e.Ids
+        });
+      }
+      catch (InvalidProductQuantity e)
+      {
+        return BadRequest(new APIResponse() { 
+          Message = e.Message,
+          Data = e.InvalidQuantity
         });
       }
 

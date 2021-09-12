@@ -53,7 +53,7 @@ namespace ShoppingAPI
             });
             services.AddDbContext<ApplicationContext>(builder =>
             {
-                builder.UseSqlServer(Configuration.GetConnectionString("ShoppingAPIDB"));
+                builder.UseSqlServer(Configuration.GetConnectionString("ShoppingAPIDB"), opt => opt.EnableRetryOnFailure());
             });
             services.AddDefaultIdentity<AppUser>(_optionConfig.ConfigureIdentityOptions)
                 .AddEntityFrameworkStores<ApplicationContext>()

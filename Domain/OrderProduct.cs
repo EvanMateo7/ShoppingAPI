@@ -25,12 +25,12 @@ namespace ShoppingAPI.Domain
         {
         }
 
-        public OrderProduct(int orderId, Product product)
+        public OrderProduct(int orderId, Product product, float quantity)
         {
           OrderId = orderId;
           ProductId = product.Id;
           Price = product.Price;
-          Quantity = product.Quantity;
+          Quantity = quantity;
         }
     }
 }

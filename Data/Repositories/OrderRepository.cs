@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using ShoppingAPI.Data.Mappings;
 using ShoppingAPI.Data.Repositories.Exceptions;
 using ShoppingAPI.Domain;
+using ShoppingAPI.Domain.Exceptions;
 using ShoppingAPI.Domain.Repository;
 
 namespace ShoppingAPI.Data.Repositories
@@ -43,7 +44,8 @@ namespace ShoppingAPI.Data.Repositories
         var orderProducts = new List<OrderProduct>();
         foreach (var product in products)
         {
-          var newOrderProduct = new OrderProduct(newOrder.Id, product);
+          // TODO: Validate quantity or remove this repo method
+          var newOrderProduct = new OrderProduct(newOrder.Id, product, product.Quantity);
           orderProducts.Add(newOrderProduct);
         }
         _appContext.OrderProducts.AddRange(orderProducts);
@@ -59,32 +61,68 @@ namespace ShoppingAPI.Data.Repositories
       }
     }
 
-    public Order AddProduct(Guid orderId, Guid productId)
+    public Order AddProduct(Guid orderId, Guid productId, float quantity)
     {
-      var order = _appContext.Orders
+      return _appContext.Database.CreateExecutionStrategy().Execute(() =>
+      {
+        using var transaction = _appContext.Database.BeginTransaction(System.Data.IsolationLevel.Serializable);
+        try
+        {
+          // Ensures fresh data is fetched and not data changed from previous transaction.
+          // This is similar to creating a new context.
+          // https://github.com/dotnet/efcore/issues/23850#issuecomment-809744519
+          _appContext.ChangeTracker.Clear(); 
+
+          var order = _appContext.Orders
                       .Where(o => o.OrderId == orderId)
                       .Include(o => o.OrderProducts)
                       .FirstOrDefault();
 
-      var product = _appContext.Products
-                      .Where(p => p.ProductId == productId)
-                      .FirstOrDefault();
+          var product = _appContext.Products
+                          .Where(p => p.ProductId == productId)
+                          .FirstOrDefault();
 
-      if (order == null)
-      {
-        throw new DoesNotExist<Order>(new List<Guid> { orderId });
-      }
-      if (product == null)
-      {
-        throw new DoesNotExist<Product>(new List<Guid> { productId });
-      }
+          if (order == null)
+          {
+            throw new DoesNotExist<Order>(new List<Guid> { orderId });
+          }
+          if (product == null)
+          {
+            throw new DoesNotExist<Product>(new List<Guid> { productId });
+          }
 
-      var newOrderProduct = new OrderProduct(order.Id, product);
+          // Validate quantity
+          try
+          {
+            if (quantity < 1)
+            {
+              throw new InvalidProductQuantity(quantity); 
+            }
+            product.Quantity -= quantity;   
+          }
+          catch (DomainException e)
+          {
+            if (e.DomainExceptionType == DomainExceptionTypes.ProductNegativeQuantity)
+            {
+              throw new InvalidProductQuantity(quantity);
+            }
+          }
 
-      order.OrderProducts.Add(newOrderProduct);
-      _appContext.SaveChanges();
+          // Add new order product
+          var newOrderProduct = new OrderProduct(order.Id, product, quantity);
+          order.OrderProducts.Add(newOrderProduct);
 
-      return order;
+          _appContext.SaveChanges();
+
+          // Save
+          transaction.Commit();
+          return order;
+        }
+        catch (DbUpdateConcurrencyException e)
+        {
+          throw;
+        }
+      });
     }
   }
 }
