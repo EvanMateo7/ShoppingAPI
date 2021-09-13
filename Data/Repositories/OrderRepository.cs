@@ -65,7 +65,7 @@ namespace ShoppingAPI.Data.Repositories
     {
       return _appContext.Database.CreateExecutionStrategy().Execute(() =>
       {
-        using var transaction = _appContext.Database.BeginTransaction(System.Data.IsolationLevel.Serializable);
+        using var transaction = _appContext.Database.BeginTransaction(System.Data.IsolationLevel.RepeatableRead);
         try
         {
           // Ensures fresh data is fetched and not data changed from previous transaction.
@@ -120,7 +120,7 @@ namespace ShoppingAPI.Data.Repositories
         }
         catch (DbUpdateConcurrencyException e)
         {
-          throw;
+          throw e;
         }
       });
     }
