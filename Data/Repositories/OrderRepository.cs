@@ -91,12 +91,12 @@ namespace ShoppingAPI.Data.Repositories
             throw new DoesNotExist<Product>(new List<Guid> { productId });
           }
 
-          // Validate quantity
+          // Validate product quantity change
           try
           {
-            if (quantity < 1)
+            if (quantity <= 0)
             {
-              throw new InvalidProductQuantity(quantity); 
+              throw new InvalidOrderProductQuantity(quantity); 
             }
             product.Quantity -= quantity;   
           }
@@ -104,13 +104,24 @@ namespace ShoppingAPI.Data.Repositories
           {
             if (e.DomainExceptionType == DomainExceptionTypes.ProductNegativeQuantity)
             {
-              throw new InvalidProductQuantity(quantity);
+              throw new InvalidOrderProductQuantity(quantity);
             }
           }
 
-          // Add new order product
-          var newOrderProduct = new OrderProduct(order.Id, product, quantity);
-          order.OrderProducts.Add(newOrderProduct);
+          // Add new order product or update existing one
+          var orderProduct = _appContext.OrderProducts
+                              .Where(op => op.OrderId == order.Id && op.ProductId == product.Id)
+                              .FirstOrDefault();
+          
+          if (orderProduct != null)
+          {
+            orderProduct.Quantity += quantity;
+          }
+          else
+          {
+            var newOrderProduct = new OrderProduct(order.Id, product, quantity);
+            order.OrderProducts.Add(newOrderProduct);
+          }
 
           _appContext.SaveChanges();
 

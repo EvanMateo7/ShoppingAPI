@@ -100,7 +100,7 @@ namespace ShoppingAPI.Controllers
           Data = e.Ids
         });
       }
-      catch (InvalidProductQuantity e)
+      catch (InvalidOrderProductQuantity e)
       {
         return BadRequest(new APIResponse() { 
           Message = e.Message,
