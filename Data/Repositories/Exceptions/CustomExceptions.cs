@@ -24,12 +24,12 @@ namespace ShoppingAPI.Data.Repositories.Exceptions
     }
   }
   
-  public class InvalidOrderProductQuantity : Exception
+  public class NotEnoughProductInStock : Exception
   {
-    public float InvalidQuantity { get; init; }
-    public InvalidOrderProductQuantity(float invalidQuantity) : base("Product quantity is either less than or equal to zero or too large")
+    public float Quantity { get; init; }
+    public NotEnoughProductInStock(float quantity) : base("Not enough product in stock")
     {
-      InvalidQuantity = invalidQuantity;
+      Quantity = quantity;
     }
   }
 }

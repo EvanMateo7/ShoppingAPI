@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using ShoppingAPI.Domain.Exceptions;
 
 namespace ShoppingAPI.Domain
 {
@@ -19,7 +20,18 @@ namespace ShoppingAPI.Domain
 
         public decimal Price { get; private set; }
 
-        public float Quantity { get; private set; }
+        private float _quantity;
+        public float Quantity { 
+          get => _quantity; 
+          set {
+            if (value <= 0)
+            {
+              throw new DomainException(DomainExceptionTypes.OrderProductInvalidQuantity);
+            }
+
+            _quantity = value;
+          } 
+        }
 
         public OrderProduct()
         {

@@ -61,7 +61,7 @@ namespace ShoppingAPI.Data.Repositories
       }
     }
 
-    public Order AddProduct(Guid orderId, Guid productId, float quantity)
+    public Order AddRemoveProduct(Guid orderId, Guid productId, float quantity)
     {
       return _appContext.Database.CreateExecutionStrategy().Execute(() =>
       {
@@ -94,33 +94,42 @@ namespace ShoppingAPI.Data.Repositories
           // Validate product quantity change
           try
           {
-            if (quantity <= 0)
-            {
-              throw new InvalidOrderProductQuantity(quantity); 
-            }
             product.Quantity -= quantity;   
           }
           catch (DomainException e)
           {
             if (e.DomainExceptionType == DomainExceptionTypes.ProductNegativeQuantity)
             {
-              throw new InvalidOrderProductQuantity(quantity);
+              throw new NotEnoughProductInStock(quantity);
             }
           }
 
-          // Add new order product or update existing one
+          // Add/Remove order product or update existing one
           var orderProduct = _appContext.OrderProducts
                               .Where(op => op.OrderId == order.Id && op.ProductId == product.Id)
                               .FirstOrDefault();
           
           if (orderProduct != null)
           {
-            orderProduct.Quantity += quantity;
+            try
+            {
+              orderProduct.Quantity += quantity;   
+            }
+            catch (DomainException e)
+            {
+                if (e.DomainExceptionType == DomainExceptionTypes.OrderProductInvalidQuantity)
+                {
+                  _appContext.Remove(orderProduct);
+                }
+            }
           }
           else
           {
-            var newOrderProduct = new OrderProduct(order.Id, product, quantity);
-            order.OrderProducts.Add(newOrderProduct);
+            if (quantity > 0)
+            {
+              var newOrderProduct = new OrderProduct(order.Id, product, quantity);
+              order.OrderProducts.Add(newOrderProduct);
+            }
           }
 
           _appContext.SaveChanges();

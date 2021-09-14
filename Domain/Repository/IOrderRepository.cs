@@ -9,6 +9,6 @@ namespace ShoppingAPI.Domain.Repository
   {
     Order Create(IEnumerable<Guid> productIds);
 
-    Order AddProduct(Guid orderId, Guid productId, float quantity);
+    Order AddRemoveProduct(Guid orderId, Guid productId, float quantity);
   }
 }

@@ -84,12 +84,12 @@ namespace ShoppingAPI.Controllers
     }
 
     [HttpPost("{orderId}")]
-    public ActionResult AddProduct(Guid orderId, OrderProductCreateDTO orderProductCreate)
+    public ActionResult AddRemoveProduct(Guid orderId, OrderProductCreateDTO orderProductCreate)
     {
       Order order = null;
       try
       {
-        order = _orderRepo.AddProduct(orderId, 
+        order = _orderRepo.AddRemoveProduct(orderId, 
                                       orderProductCreate.ProductId,
                                       orderProductCreate.Quantity);
       }
@@ -100,11 +100,11 @@ namespace ShoppingAPI.Controllers
           Data = e.Ids
         });
       }
-      catch (InvalidOrderProductQuantity e)
+      catch (NotEnoughProductInStock e)
       {
         return BadRequest(new APIResponse() { 
           Message = e.Message,
-          Data = e.InvalidQuantity
+          Data = e.Quantity
         });
       }
 
