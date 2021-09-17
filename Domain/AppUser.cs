@@ -17,5 +17,7 @@ namespace ShoppingAPI.Domain
         public ICollection<Order> Orders { get; private set; }
 
         public ICollection<Product> Products { get; private set; }
+
+        public ICollection<Cart> CartProducts { get; private set; }
     }
 }

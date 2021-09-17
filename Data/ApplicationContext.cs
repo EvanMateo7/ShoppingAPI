@@ -29,6 +29,8 @@ namespace ShoppingAPI.Data
             builder.ApplyConfiguration(new ProductEntityTypeConfiguration());
 
             builder.ApplyConfiguration(new OrderProductEntityTypeConfiguration());
+
+            builder.ApplyConfiguration(new CartEntityTypeConfiguration());
         }
     }
 }
