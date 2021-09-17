@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -45,6 +47,28 @@ namespace ShoppingAPI.Controllers
 
       var userResult = _mapper.Map<AppUserReadDTO>(user);
       return Ok(userResult);
+    }
+
+    [Authorize]
+    [HttpGet("cart")]
+    public ActionResult GetUserCart()
+    {
+      var username = User.FindFirst(c => c.Type == ClaimTypes.Email).Value;
+      var user = _userManager.Users
+                      .Where(u => u.UserName == username)
+                      .Include(u => u.CartProducts)
+                      .ThenInclude(cp => cp.Product)
+                      .FirstOrDefault();
+
+      if (user == null)
+      {
+        return NotFound();
+      }
+
+      var cartProducts = user.CartProducts.Select(cp => cp.Product);
+
+      var productResult = _mapper.Map<IEnumerable<ProductReadDTO>>(cartProducts);
+      return Ok(productResult);
     }
   }
 }
