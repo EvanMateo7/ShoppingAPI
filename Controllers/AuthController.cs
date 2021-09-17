@@ -52,6 +52,7 @@ namespace ShoppingAPI.Controllers
             }
             else
             {
+                user = new AppUser() { UserName = email, Email = email };
                 var result = await _userManager.CreateAsync(user);
 
                 if (result.Succeeded || result.Errors.Any(e => e.Code == nameof(IdentityErrorDescriber.DuplicateUserName)))
