@@ -9,8 +9,6 @@ namespace ShoppingAPI.Data.Mappings
 {
     public class ProductReadDTO
     {
-        public int Id { get; private set; }
-
         public Guid ProductId { get; set; }
 
         public AppUserReadDTO User { get; private set; }
