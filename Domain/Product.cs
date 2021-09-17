@@ -40,6 +40,8 @@ namespace ShoppingAPI.Domain
 
         public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
 
+        public byte[] Timestamp { get; private set; }
+
         public ICollection<OrderProduct> OrderProducts { get; private set; }
     }
 }
