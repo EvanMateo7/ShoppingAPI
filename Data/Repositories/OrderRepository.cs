@@ -23,7 +23,7 @@ namespace ShoppingAPI.Data.Repositories
     {
       var products = _appContext.Products
                       .Where(p => productIds.Contains(p.ProductId));
-                    
+
       var ids = products.Select(p => p.ProductId);
 
       var nonExistingProducts = productIds.Except(ids);
@@ -50,7 +50,7 @@ namespace ShoppingAPI.Data.Repositories
         }
         _appContext.OrderProducts.AddRange(orderProducts);
         _appContext.SaveChanges();
-  
+
         // Save
         transaction.Commit();
         return newOrder;
@@ -63,20 +63,16 @@ namespace ShoppingAPI.Data.Repositories
 
     public Order AddRemoveProduct(Guid orderId, Guid productId, float quantity)
     {
-      return _appContext.Database.CreateExecutionStrategy().Execute(() =>
+      bool saveFailed;
+      do
       {
-        using var transaction = _appContext.Database.BeginTransaction(System.Data.IsolationLevel.RepeatableRead);
+        saveFailed = false;
         try
         {
-          // Ensures fresh data is fetched and not data changed from previous transaction.
-          // This is similar to creating a new context.
-          // https://github.com/dotnet/efcore/issues/23850#issuecomment-809744519
-          _appContext.ChangeTracker.Clear(); 
-
           var order = _appContext.Orders
-                      .Where(o => o.OrderId == orderId)
-                      .Include(o => o.OrderProducts)
-                      .FirstOrDefault();
+                  .Where(o => o.OrderId == orderId)
+                  .Include(o => o.OrderProducts)
+                  .FirstOrDefault();
 
           var product = _appContext.Products
                           .Where(p => p.ProductId == productId)
@@ -94,7 +90,7 @@ namespace ShoppingAPI.Data.Repositories
           // Validate product quantity change
           try
           {
-            product.Quantity -= quantity;   
+            product.Quantity -= quantity;
           }
           catch (DomainException e)
           {
@@ -108,19 +104,19 @@ namespace ShoppingAPI.Data.Repositories
           var orderProduct = _appContext.OrderProducts
                               .Where(op => op.OrderId == order.Id && op.ProductId == product.Id)
                               .FirstOrDefault();
-          
+
           if (orderProduct != null)
           {
             try
             {
-              orderProduct.Quantity += quantity;   
+              orderProduct.Quantity += quantity;
             }
             catch (DomainException e)
             {
-                if (e.DomainExceptionType == DomainExceptionTypes.OrderProductInvalidQuantity)
-                {
-                  _appContext.Remove(orderProduct);
-                }
+              if (e.DomainExceptionType == DomainExceptionTypes.OrderProductInvalidQuantity)
+              {
+                _appContext.Remove(orderProduct);
+              }
             }
           }
           else
@@ -132,17 +128,20 @@ namespace ShoppingAPI.Data.Repositories
             }
           }
 
-          _appContext.SaveChanges();
-
           // Save
-          transaction.Commit();
+          _appContext.SaveChanges();
           return order;
         }
         catch (DbUpdateConcurrencyException e)
         {
-          throw e;
+          saveFailed = true;
+
+          // Reload product entity
+          e.Entries.Single().Reload();
         }
-      });
+      } while (saveFailed);
+
+      return null;
     }
   }
 }
