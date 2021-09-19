@@ -17,13 +17,13 @@ namespace ShoppingAPI.Controllers
 {
   [ApiController]
   [Route("api/user")]
-  public class UserController : ControllerBase
+  public class AppUserController : ControllerBase
   {
     private readonly UserManager<AppUser> _userManager;
     private readonly IProductRepository _productRepo;
     private readonly IMapper _mapper;
 
-    public UserController(UserManager<AppUser> userManager,
+    public AppUserController(UserManager<AppUser> userManager,
                                 IProductRepository productRepo,
                                 IMapper mapper)
     {

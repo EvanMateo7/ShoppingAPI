@@ -3,11 +3,12 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using ShoppingAPI.Domain.Interfaces;
 using ShoppingAPI.Domain.Repository;
 
 namespace ShoppingAPI.Data.Repositories
 {
-  public abstract class RepositoryBase<T> : IRepositoryBase<T> where T : class
+  public abstract class RepositoryBase<T> : IRepositoryBase<T> where T : class, IAggregateRoot
   {
     private readonly ApplicationContext _appContext;
 

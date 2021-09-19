@@ -2,7 +2,7 @@
 
 using System;
 using System.Collections.Generic;
-using ShoppingAPI.Domain;
+using ShoppingAPI.Domain.Interfaces;
 
 namespace ShoppingAPI.Data.Repositories.Exceptions
 {

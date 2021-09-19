@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
 using ShoppingAPI.Domain.Exceptions;
+using ShoppingAPI.Domain.Interfaces;
 
 namespace ShoppingAPI.Domain
 {
-    public class Product : IDomainEntity
+  public class Product : IDomainEntity, IAggregateRoot
     {
         public int Id { get; private set; }
 

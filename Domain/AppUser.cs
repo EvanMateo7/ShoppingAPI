@@ -1,14 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using System;
+using ShoppingAPI.Domain.Interfaces;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Threading.Tasks;
 
 namespace ShoppingAPI.Domain
 {
-    public class AppUser : IdentityUser, IDomainEntity
+  public class AppUser : IdentityUser, IDomainEntity, IAggregateRoot
     {
         public string First_Name { get; private set; }
 

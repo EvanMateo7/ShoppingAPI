@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
+using ShoppingAPI.Domain.Interfaces;
 
 namespace ShoppingAPI.Domain
 {
-    public class Order : IDomainEntity
+  public class Order : IDomainEntity, IAggregateRoot
     {
         public int Id { get; private set; }
 

@@ -4,7 +4,7 @@ using ShoppingAPI.Domain;
 
 namespace ShoppingAPI.Domain.Repository
 {
-  public interface ICartRepository : IRepositoryBase<Product>
+  public interface IAppUserRepository : IRepositoryBase<AppUser>
   {
   }
 }

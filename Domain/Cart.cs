@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using ShoppingAPI.Domain.Interfaces;
 
 namespace ShoppingAPI.Domain
 {
-    public class Cart : IDomainEntity
+  public class Cart : IDomainEntity
     {
         public int Id { get; private set; }
 
