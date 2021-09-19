@@ -1,6 +1,7 @@
 
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using ShoppingAPI.Domain.Interfaces;
 
@@ -17,7 +18,7 @@ namespace ShoppingAPI.Data.Repositories.Exceptions
 
     public DoesNotExistBase(IEnumerable<Guid> ids, string msg) : base(msg)
     {
-      Ids = (IEnumerable<string>) ids;
+      Ids = ids.Select(id => id.ToString());
     }
   }
 
