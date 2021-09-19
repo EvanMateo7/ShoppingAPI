@@ -70,7 +70,7 @@ namespace ShoppingAPI.Controllers
       {
         orderCreated = _orderRepo.Create(orderCreate.ProductIDs);
       }
-      catch (DoesNotExist<Product> e)
+      catch (DoesNotExistBase e)
       {
         return BadRequest(new APIResponse() { 
           Message = e.Message,
@@ -93,7 +93,7 @@ namespace ShoppingAPI.Controllers
                                       orderProductCreate.ProductId,
                                       orderProductCreate.Quantity);
       }
-      catch (DoesNotExist e)
+      catch (DoesNotExistBase e)
       {
         return BadRequest(new APIResponse() { 
           Message = e.Message,

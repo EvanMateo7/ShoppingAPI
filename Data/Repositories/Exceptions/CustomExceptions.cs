@@ -6,20 +6,32 @@ using ShoppingAPI.Domain.Interfaces;
 
 namespace ShoppingAPI.Data.Repositories.Exceptions
 {
-  public class DoesNotExist : Exception
+  public class DoesNotExistBase : Exception
   {
-    public IEnumerable<Guid> Ids { get; init; }
+    public IEnumerable<dynamic> Ids { get; init; }
     
-    public DoesNotExist(IEnumerable<Guid> ids, string msg) : base(msg)
+    public DoesNotExistBase(IEnumerable<dynamic> ids, string msg) : base(msg)
     {
       Ids = ids;
     }
+
+    public DoesNotExistBase(IEnumerable<Guid> ids, string msg) : base(msg)
+    {
+      Ids = (IEnumerable<string>) ids;
+    }
   }
 
-  public class DoesNotExist<T> : DoesNotExist where T : IDomainEntity
+  public class DoesNotExist<T> : DoesNotExistBase where T : IDomainEntity
   {
+    public static string message = $"One or more {typeof(T).Name.ToLower()}(s) do not exist";
+
+    public DoesNotExist(IEnumerable<dynamic> ids)
+      : base(ids, message)
+    {
+    }
+
     public DoesNotExist(IEnumerable<Guid> ids)
-      : base(ids, $"One or more {typeof(T).Name.ToLower()}(s) do not exist")
+      : base(ids, message)
     {
     }
   }
