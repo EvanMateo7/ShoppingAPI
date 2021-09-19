@@ -67,6 +67,7 @@ namespace ShoppingAPI
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             // Repositories
+            services.AddScoped<IAppUserRepository, AppUserRepository>();
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
 

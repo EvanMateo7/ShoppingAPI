@@ -17,5 +17,6 @@ namespace ShoppingAPI.Domain.Exceptions
   {
     public static string ProductNegativeQuantity => "product_negative_quantity";
     public static string OrderProductInvalidQuantity => "order_product_invalid_quantity";
+    public static string CartProductInvalidQuantity => "cart_product_invalid_quantity";
   }
 }
