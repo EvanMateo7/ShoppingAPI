@@ -7,22 +7,22 @@ using ShoppingAPI.Domain.Interfaces;
 
 namespace ShoppingAPI.Data.Repositories.Exceptions
 {
-  public class DoesNotExistBase : Exception
+  public class DoesNotExist : Exception
   {
     public IEnumerable<dynamic> Ids { get; init; }
     
-    public DoesNotExistBase(IEnumerable<dynamic> ids, string msg) : base(msg)
+    public DoesNotExist(IEnumerable<dynamic> ids, string msg) : base(msg)
     {
       Ids = ids;
     }
 
-    public DoesNotExistBase(IEnumerable<Guid> ids, string msg) : base(msg)
+    public DoesNotExist(IEnumerable<Guid> ids, string msg) : base(msg)
     {
       Ids = ids.Select(id => id.ToString());
     }
   }
 
-  public class DoesNotExist<T> : DoesNotExistBase where T : IDomainEntity
+  public class DoesNotExist<T> : DoesNotExist where T : IDomainEntity
   {
     public static string message = $"One or more {typeof(T).Name.ToLower()}(s) do not exist";
 

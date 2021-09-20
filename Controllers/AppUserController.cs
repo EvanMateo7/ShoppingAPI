@@ -94,7 +94,7 @@ namespace ShoppingAPI.Controllers
                                               orderProductCreate.ProductId,
                                               orderProductCreate.Quantity);
       }
-      catch (DoesNotExistBase e)
+      catch (DoesNotExist e)
       {
         return BadRequest(new APIResponse() { 
           Message = e.Message,
