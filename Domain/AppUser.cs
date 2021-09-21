@@ -10,10 +10,10 @@ namespace ShoppingAPI.Domain
 
         public string Last_Name { get; private set; }
 
-        public ICollection<Order> Orders { get; private set; }
+        public ICollection<Order> Orders { get; private set; } = new HashSet<Order>();
 
-        public ICollection<Product> Products { get; private set; }
+        public ICollection<Product> Products { get; private set; } = new HashSet<Product>();
 
-        public ICollection<Cart> CartProducts { get; private set; }
+        public ICollection<Cart> CartProducts { get; private set; } = new HashSet<Cart>();
     }
 }

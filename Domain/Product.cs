@@ -39,6 +39,6 @@ namespace ShoppingAPI.Domain
 
         public byte[] Timestamp { get; private set; }
 
-        public ICollection<OrderProduct> OrderProducts { get; private set; }
+        public ICollection<OrderProduct> OrderProducts { get; private set; } = new HashSet<OrderProduct>();
     }
 }

@@ -8,9 +8,9 @@ namespace ShoppingAPI.Domain
     {
         public int Id { get; private set; }
 
-        public Guid OrderId { get; private set; }
+        public Guid OrderId { get; private set; } = Guid.NewGuid();
 
-        public string UserId { get; private set; }
+        public string UserId { get; set; }
         public AppUser User { get; private set; }
 
 #nullable enable
@@ -19,6 +19,6 @@ namespace ShoppingAPI.Domain
 
         public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
 
-        public ICollection<OrderProduct> OrderProducts { get; private set; }
+        public ICollection<OrderProduct> OrderProducts { get; private set; } = new HashSet<OrderProduct>();
     }
 }
