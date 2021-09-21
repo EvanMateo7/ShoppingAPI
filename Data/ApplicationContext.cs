@@ -19,6 +19,8 @@ namespace ShoppingAPI.Data
 
         public DbSet<OrderProduct> OrderProducts { get; set; }
 
+        public DbSet<Cart> Cart { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             // Must call IdentityDbContext.OnModelCreating because it has its own implementation
