@@ -54,4 +54,11 @@ namespace ShoppingAPI.Data.Repositories.Exceptions
       productQuantities = new List<ProductQuantity> { data };
     }
   }
+
+  public class EmptyCart : Exception
+  {
+    public EmptyCart() : base("Cart is empty")
+    {
+    }
+  }
 }

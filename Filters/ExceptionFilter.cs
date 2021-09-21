@@ -43,6 +43,16 @@ namespace ShoppingAPI.Filters
               });
               break;
             }
+
+            case EmptyCart:
+            {
+              var e = exception as EmptyCart;
+              result = new BadRequestObjectResult(new APIResponse() { 
+                Message = e.Message,
+              });
+              break;
+            }
+
             default:
               break;
         }

@@ -91,8 +91,7 @@ namespace ShoppingAPI.Controllers
                       .ThenInclude(cp => cp.Product)
                       .FirstOrDefault();
 
-      IEnumerable<Cart> cart = new List<Cart>();
-      cart = _appUserRepo.AddRemoveProductInCart(user.Id, 
+      IEnumerable<Cart> cart = _appUserRepo.AddRemoveProductInCart(user.Id, 
                                             orderProductCreate.ProductId,
                                             orderProductCreate.Quantity);
 
@@ -111,9 +110,13 @@ namespace ShoppingAPI.Controllers
                       .Include(u => u.CartProducts)
                       .ThenInclude(u => u.Product)
                       .FirstOrDefault();
+                    
+      if (user.CartProducts.Count() == 0)
+      {
+        throw new EmptyCart();
+      }
 
-      Order orderCreated = null;
-      orderCreated = _orderRepo.Create(user);
+      Order orderCreated = _orderRepo.Create(user);
 
       var orderReadDTO = _mapper.Map<OrderReadDTO>(orderCreated);
 
