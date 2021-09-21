@@ -71,28 +71,11 @@ namespace ShoppingAPI.Controllers
                     .Include(o => o.OrderProducts)
                     .FirstOrDefault();
 
-      try
-      {
-        order = _orderRepo.AddRemoveProduct(order, new List<ProductQuantity> { productQuantity });
-      }
-      catch (DoesNotExist e)
-      {
-        return BadRequest(new APIResponse() { 
-          Message = e.Message,
-          Data = e.Ids
-        });
-      }
-      catch (NotEnoughProductsInStock e)
-      {
-        return BadRequest(new APIResponse() { 
-          Message = e.Message,
-          Data = e.productQuantities
-        });
-      }
+      order = _orderRepo.AddRemoveProduct(order, new List<ProductQuantity> { productQuantity });
 
       var orderReadDTO = _mapper.Map<OrderReadDTO>(order);
 
-      return CreatedAtAction(nameof(GetOrders), new { userId = order.UserId }, orderReadDTO);
+      return CreatedAtAction(nameof(GetOrderById), new { id = orderReadDTO.OrderId }, orderReadDTO);
     }
   }
 }

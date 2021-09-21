@@ -92,26 +92,9 @@ namespace ShoppingAPI.Controllers
                       .FirstOrDefault();
 
       IEnumerable<Cart> cart = new List<Cart>();
-      try
-      {
-        cart = _appUserRepo.AddRemoveProduct(user.Id, 
-                                              orderProductCreate.ProductId,
-                                              orderProductCreate.Quantity);
-      }
-      catch (DoesNotExist e)
-      {
-        return BadRequest(new APIResponse() { 
-          Message = e.Message,
-          Data = e.Ids
-        });
-      }
-      catch (NotEnoughProductsInStock e)
-      {
-        return BadRequest(new APIResponse() { 
-          Message = e.Message,
-          Data = e.productQuantities
-        });
-      }
+      cart = _appUserRepo.AddRemoveProduct(user.Id, 
+                                            orderProductCreate.ProductId,
+                                            orderProductCreate.Quantity);
 
       var cartProducts = user.CartProducts.Select(cp => cp.Product);
       var cartResult = _mapper.Map<IEnumerable<ProductReadDTO>>(cartProducts);
@@ -130,28 +113,14 @@ namespace ShoppingAPI.Controllers
                       .FirstOrDefault();
 
       Order orderCreated = null;
-      try
-      {
-        orderCreated = _orderRepo.Create(user);
-      }
-      catch (DoesNotExist e)
-      {
-        return BadRequest(new APIResponse() { 
-          Message = e.Message,
-          Data = e.Ids
-        });
-      }
-      catch (NotEnoughProductsInStock e)
-      {
-        return BadRequest(new APIResponse() { 
-          Message = e.Message,
-          Data = e.productQuantities
-        });
-      }
+      orderCreated = _orderRepo.Create(user);
 
       var orderReadDTO = _mapper.Map<OrderReadDTO>(orderCreated);
 
-      return CreatedAtAction(nameof(OrderController.GetOrders), new { userId = orderCreated.UserId }, orderReadDTO);
+      return CreatedAtAction(nameof(OrderController.GetOrderById), 
+                              nameof(OrderController).Replace(nameof(Controller), string.Empty), 
+                              new { id = orderReadDTO.OrderId }, 
+                              orderReadDTO);
     }
   }
 }

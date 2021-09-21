@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using ShoppingAPI.Filters;
 
 namespace ShoppingAPI
 {
@@ -81,7 +82,7 @@ namespace ShoppingAPI
             {
                 options.AddPolicy("test", policy => policy.RequireClaim("test"));
             });
-            services.AddControllers()
+            services.AddControllers(options => options.Filters.Add(typeof(ExceptionFilter)))
               .AddNewtonsoftJson(x =>
               {
                   x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
