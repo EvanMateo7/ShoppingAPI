@@ -4,9 +4,11 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using ShoppingAPI.Data.Mappings;
 using ShoppingAPI.Data.Repositories.Exceptions;
+using ShoppingAPI.Data.Repositories.Records;
 using ShoppingAPI.Domain;
 using ShoppingAPI.Domain.Exceptions;
 using ShoppingAPI.Domain.Repository;
+using static ShoppingAPI.Data.Repositories.Exceptions.NotEnoughProductsInStock;
 
 namespace ShoppingAPI.Data.Repositories
 {
@@ -19,49 +21,27 @@ namespace ShoppingAPI.Data.Repositories
       _appContext = appContext;
     }
 
-    public Order Create(IEnumerable<Guid> productIds)
+    public Order Create(AppUser user)
     {
-      var products = _appContext.Products
-                      .Where(p => productIds.Contains(p.ProductId));
+      var productQuantities = user.CartProducts.Select(cp => new ProductQuantity(cp.Product.ProductId, cp.Quantity));
 
-      var ids = products.Select(p => p.ProductId);
-
-      var nonExistingProducts = productIds.Except(ids);
-      if (nonExistingProducts.Count() > 0)
+      var newOrder = new Order() { UserId = user.Id };
+      _appContext.Database.CreateExecutionStrategy().ExecuteInTransaction(() =>
       {
-        throw new DoesNotExist<Product>(nonExistingProducts);
-      }
+        // Add cart products to new order
+        newOrder = AddRemoveProduct(newOrder, productQuantities);
 
-      using var transaction = _appContext.Database.BeginTransaction();
-      try
-      {
-        // Create order
-        var newOrder = new Order();
-        _appContext.Orders.Add(newOrder);
+        // Clear cart after creating order
+        _appContext.Cart.RemoveRange(user.CartProducts);
+        
         _appContext.SaveChanges();
 
-        // Add products to order
-        var orderProducts = new List<OrderProduct>();
-        foreach (var product in products)
-        {
-          // TODO: Validate quantity or remove this repo method
-          var newOrderProduct = new OrderProduct(newOrder.Id, product, product.Quantity);
-          orderProducts.Add(newOrderProduct);
-        }
-        _appContext.OrderProducts.AddRange(orderProducts);
-        _appContext.SaveChanges();
+      }, () => true);
 
-        // Save
-        transaction.Commit();
-        return newOrder;
-      }
-      catch (System.Exception)
-      {
-        throw new Exception();
-      }
+      return newOrder;
     }
 
-    public Order AddRemoveProduct(Guid orderId, Guid productId, float quantity)
+    public Order AddRemoveProduct(Order order, IEnumerable<ProductQuantity> productQuantities)
     {
       bool saveFailed;
       do
@@ -69,66 +49,78 @@ namespace ShoppingAPI.Data.Repositories
         saveFailed = false;
         try
         {
-          var order = _appContext.Orders
-                  .Where(o => o.OrderId == orderId)
-                  .Include(o => o.OrderProducts)
-                  .FirstOrDefault();
-
-          var product = _appContext.Products
-                          .Where(p => p.ProductId == productId)
-                          .FirstOrDefault();
-
+          // Order
           if (order == null)
           {
-            throw new DoesNotExist<Order>(new List<Guid> { orderId });
-          }
-          if (product == null)
-          {
-            throw new DoesNotExist<Product>(new List<Guid> { productId });
+            throw new DoesNotExist<Order>(new List<Guid> { order.OrderId });
           }
 
-          // Validate product quantity change
-          try
+          // Products
+          var productIds = productQuantities.Select(pq => pq.ProductId);
+
+          var products = _appContext.Products.Where(p => productIds.Contains(p.ProductId));
+
+          var ids = products.Select(p => p.ProductId);
+          var nonExistingProducts = productIds.Except(ids);
+          if (nonExistingProducts.Count() > 0)
           {
-            product.Quantity -= quantity;
-          }
-          catch (DomainException e)
-          {
-            if (e.DomainExceptionType == DomainExceptionTypes.ProductNegativeQuantity)
-            {
-              throw new NotEnoughProductInStock(quantity);
-            }
+            throw new DoesNotExist<Product>(nonExistingProducts);
           }
 
-          // Add/Remove order product or update existing one
-          var orderProduct = _appContext.OrderProducts
-                              .Where(op => op.OrderId == order.Id && op.ProductId == product.Id)
-                              .FirstOrDefault();
-
-          if (orderProduct != null)
+          foreach(var product in products)
           {
+            // Validate product quantity change
+            var productsNotEnoughStock = new List<ProductQuantity>();
+            var quantity = productQuantities.Where(pq => pq.ProductId == product.ProductId).Select(pq => pq.Quantity).Single();
+
             try
             {
-              orderProduct.Quantity += quantity;
+              product.Quantity -= quantity;
             }
             catch (DomainException e)
             {
-              if (e.DomainExceptionType == DomainExceptionTypes.OrderProductInvalidQuantity)
+              if (e.DomainExceptionType == DomainExceptionTypes.ProductNegativeQuantity)
               {
-                _appContext.Remove(orderProduct);
+                productsNotEnoughStock.Add(new ProductQuantity(product.ProductId, quantity));
               }
             }
-          }
-          else
-          {
-            if (quantity > 0)
+
+            if (productsNotEnoughStock.Count() > 0)
             {
-              var newOrderProduct = new OrderProduct(order.Id, product, quantity);
-              order.OrderProducts.Add(newOrderProduct);
+              throw new NotEnoughProductsInStock(new ProductQuantity(product.ProductId,quantity));
+            }
+
+            // Add/Remove order product or update existing one
+            var orderProduct = _appContext.OrderProducts
+                                .Where(op => op.OrderId == order.Id && op.ProductId == product.Id)
+                                .FirstOrDefault();
+
+            if (orderProduct != null)
+            {
+              try
+              {
+                orderProduct.Quantity += quantity;
+              }
+              catch (DomainException e)
+              {
+                if (e.DomainExceptionType == DomainExceptionTypes.OrderProductInvalidQuantity)
+                {
+                  _appContext.Remove(orderProduct);
+                }
+              }
+            }
+            else
+            {
+              if (quantity > 0)
+              {
+                var newOrderProduct = new OrderProduct(order.Id, product, quantity);
+                order.OrderProducts.Add(newOrderProduct);
+              }
             }
           }
 
           // Save
+          _appContext.Orders.Add(order);
           _appContext.SaveChanges();
           return order;
         }

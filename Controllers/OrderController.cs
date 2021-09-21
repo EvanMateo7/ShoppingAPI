@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ShoppingAPI.Data.Mappings;
 using ShoppingAPI.Data.Repositories.Exceptions;
+using ShoppingAPI.Data.Repositories.Records;
 using ShoppingAPI.Data.Util;
 using ShoppingAPI.Domain;
 using ShoppingAPI.Domain.Exceptions;
@@ -62,36 +63,17 @@ namespace ShoppingAPI.Controllers
       return Ok(ordersResult);
     }
 
-    [HttpPost]
-    public ActionResult CreateOrder(OrderCreateDTO orderCreate)
-    {
-      Order orderCreated = null;
-      try
-      {
-        orderCreated = _orderRepo.Create(orderCreate.ProductIDs);
-      }
-      catch (DoesNotExist e)
-      {
-        return BadRequest(new APIResponse() { 
-          Message = e.Message,
-          Data = e.Ids
-        });
-      }
-
-      var orderReadDTO = _mapper.Map<OrderReadDTO>(orderCreated);
-
-      return CreatedAtAction(nameof(GetOrders), new { userId = orderCreated.UserId }, orderReadDTO);
-    }
-
     [HttpPost("{orderId}")]
-    public ActionResult AddRemoveProduct(Guid orderId, OrderProductCreateDTO orderProductCreate)
+    public ActionResult AddRemoveProduct(Guid orderId, ProductQuantity productQuantity)
     {
-      Order order = null;
+      var order = _orderRepo
+                    .Find(o => o.OrderId == orderId)
+                    .Include(o => o.OrderProducts)
+                    .FirstOrDefault();
+
       try
       {
-        order = _orderRepo.AddRemoveProduct(orderId, 
-                                      orderProductCreate.ProductId,
-                                      orderProductCreate.Quantity);
+        order = _orderRepo.AddRemoveProduct(order, new List<ProductQuantity> { productQuantity });
       }
       catch (DoesNotExist e)
       {
@@ -100,11 +82,11 @@ namespace ShoppingAPI.Controllers
           Data = e.Ids
         });
       }
-      catch (NotEnoughProductInStock e)
+      catch (NotEnoughProductsInStock e)
       {
         return BadRequest(new APIResponse() { 
           Message = e.Message,
-          Data = e.Quantity
+          Data = e.productQuantities
         });
       }
 

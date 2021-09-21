@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using ShoppingAPI.Domain.Interfaces;
+using ShoppingAPI.Data.Repositories.Records;
 
 namespace ShoppingAPI.Data.Repositories.Exceptions
 {
@@ -37,12 +38,20 @@ namespace ShoppingAPI.Data.Repositories.Exceptions
     }
   }
   
-  public class NotEnoughProductInStock : Exception
+  public class NotEnoughProductsInStock : Exception
   {
-    public float Quantity { get; init; }
-    public NotEnoughProductInStock(float quantity) : base("Not enough product in stock")
+    public static string message = "Not enough products in stock";
+
+    public IEnumerable<ProductQuantity> productQuantities { get; init; }
+    
+    public NotEnoughProductsInStock(IEnumerable<ProductQuantity> data) : base(message)
     {
-      Quantity = quantity;
+      productQuantities = data;
+    }
+
+    public NotEnoughProductsInStock(ProductQuantity data) : base(message)
+    {
+      productQuantities = new List<ProductQuantity> { data };
     }
   }
 }

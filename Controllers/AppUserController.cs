@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using ShoppingAPI.Data.Mappings;
 using ShoppingAPI.Data.Repositories;
 using ShoppingAPI.Data.Repositories.Exceptions;
+using ShoppingAPI.Data.Repositories.Records;
 using ShoppingAPI.Data.Util;
 using ShoppingAPI.Domain;
 using ShoppingAPI.Domain.Repository;
@@ -23,16 +24,19 @@ namespace ShoppingAPI.Controllers
   {
     private readonly UserManager<AppUser> _userManager;
     private readonly IAppUserRepository _appUserRepo;
+    private readonly IOrderRepository _orderRepo;
     private readonly IProductRepository _productRepo;
     private readonly IMapper _mapper;
 
     public AppUserController(UserManager<AppUser> userManager,
                                 IAppUserRepository appUserRepo,
+                                IOrderRepository orderRepo,
                                 IProductRepository productRepo,
                                 IMapper mapper)
     {
       _userManager = userManager;
       _appUserRepo = appUserRepo;
+      _orderRepo = orderRepo;
       _productRepo = productRepo;
       _mapper = mapper;
     }
@@ -101,17 +105,53 @@ namespace ShoppingAPI.Controllers
           Data = e.Ids
         });
       }
-      catch (NotEnoughProductInStock e)
+      catch (NotEnoughProductsInStock e)
       {
         return BadRequest(new APIResponse() { 
           Message = e.Message,
-          Data = e.Quantity
+          Data = e.productQuantities
         });
       }
 
       var cartProducts = user.CartProducts.Select(cp => cp.Product);
       var cartResult = _mapper.Map<IEnumerable<ProductReadDTO>>(cartProducts);
       return CreatedAtAction(nameof(GetUserCart), cartResult);
+    }
+
+    [Authorize]
+    [HttpPost("cart/checkout")]
+    public ActionResult Checkout()
+    {
+      var username = User.FindFirst(c => c.Type == ClaimTypes.Email).Value;
+      var user = _userManager.Users
+                      .Where(u => u.UserName == username)
+                      .Include(u => u.CartProducts)
+                      .ThenInclude(u => u.Product)
+                      .FirstOrDefault();
+
+      Order orderCreated = null;
+      try
+      {
+        orderCreated = _orderRepo.Create(user);
+      }
+      catch (DoesNotExist e)
+      {
+        return BadRequest(new APIResponse() { 
+          Message = e.Message,
+          Data = e.Ids
+        });
+      }
+      catch (NotEnoughProductsInStock e)
+      {
+        return BadRequest(new APIResponse() { 
+          Message = e.Message,
+          Data = e.productQuantities
+        });
+      }
+
+      var orderReadDTO = _mapper.Map<OrderReadDTO>(orderCreated);
+
+      return CreatedAtAction(nameof(OrderController.GetOrders), new { userId = orderCreated.UserId }, orderReadDTO);
     }
   }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ShoppingAPI.Data.Repositories.Exceptions;
+using ShoppingAPI.Data.Repositories.Records;
 using ShoppingAPI.Domain;
 using ShoppingAPI.Domain.Exceptions;
 using ShoppingAPI.Domain.Repository;
@@ -58,7 +59,7 @@ namespace ShoppingAPI.Data.Repositories
 
           if (cartProduct.Quantity > product.Quantity)
           {
-            throw new NotEnoughProductInStock(cartProduct.Quantity);
+            throw new NotEnoughProductsInStock(new ProductQuantity(product.ProductId, quantity));
           }
         }
         catch (DomainException e)
@@ -73,7 +74,7 @@ namespace ShoppingAPI.Data.Repositories
       {
         if (quantity > product.Quantity)
         {
-          throw new NotEnoughProductInStock(quantity);
+          throw new NotEnoughProductsInStock(new ProductQuantity(product.ProductId, quantity));
         }
 
         if (quantity > 0)
