@@ -8,6 +8,6 @@ namespace ShoppingAPI.Domain.Repository
 {
   public interface IAppUserRepository : IRepositoryBase<AppUser>
   {
-    IEnumerable<Cart> AddRemoveProduct(string userId, Guid productId, float quantity);
+    IEnumerable<Cart> AddRemoveProductInCart(string userId, Guid productId, float quantity);
   }
 }

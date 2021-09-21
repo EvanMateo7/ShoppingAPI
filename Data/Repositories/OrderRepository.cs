@@ -29,7 +29,7 @@ namespace ShoppingAPI.Data.Repositories
       _appContext.Database.CreateExecutionStrategy().ExecuteInTransaction(() =>
       {
         // Add cart products to new order
-        newOrder = AddRemoveProduct(newOrder, productQuantities);
+        newOrder = AddRemoveProductInOrder(newOrder, productQuantities);
 
         // Clear cart after creating order
         _appContext.Cart.RemoveRange(user.CartProducts);
@@ -41,7 +41,7 @@ namespace ShoppingAPI.Data.Repositories
       return newOrder;
     }
 
-    public Order AddRemoveProduct(Order order, IEnumerable<ProductQuantity> productQuantities)
+    public Order AddRemoveProductInOrder(Order order, IEnumerable<ProductQuantity> productQuantities)
     {
       bool saveFailed;
       do

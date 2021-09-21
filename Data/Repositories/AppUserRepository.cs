@@ -22,7 +22,7 @@ namespace ShoppingAPI.Data.Repositories
       _userManager = userManager;
     }
 
-    public IEnumerable<Cart> AddRemoveProduct(string userId, Guid productId, float quantity)
+    public IEnumerable<Cart> AddRemoveProductInCart(string userId, Guid productId, float quantity)
     {
       var user = _userManager.Users
                   .Where(u => u.Id == userId)

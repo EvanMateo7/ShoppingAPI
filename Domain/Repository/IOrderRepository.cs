@@ -10,6 +10,6 @@ namespace ShoppingAPI.Domain.Repository
   {
     Order Create(AppUser user);
 
-    Order AddRemoveProduct(Order order, IEnumerable<ProductQuantity> productQuantities);
+    Order AddRemoveProductInOrder(Order order, IEnumerable<ProductQuantity> productQuantities);
   }
 }

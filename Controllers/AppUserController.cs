@@ -92,7 +92,7 @@ namespace ShoppingAPI.Controllers
                       .FirstOrDefault();
 
       IEnumerable<Cart> cart = new List<Cart>();
-      cart = _appUserRepo.AddRemoveProduct(user.Id, 
+      cart = _appUserRepo.AddRemoveProductInCart(user.Id, 
                                             orderProductCreate.ProductId,
                                             orderProductCreate.Quantity);
 

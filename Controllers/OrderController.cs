@@ -71,7 +71,7 @@ namespace ShoppingAPI.Controllers
                     .Include(o => o.OrderProducts)
                     .FirstOrDefault();
 
-      order = _orderRepo.AddRemoveProduct(order, new List<ProductQuantity> { productQuantity });
+      order = _orderRepo.AddRemoveProductInOrder(order, new List<ProductQuantity> { productQuantity });
 
       var orderReadDTO = _mapper.Map<OrderReadDTO>(order);
 
