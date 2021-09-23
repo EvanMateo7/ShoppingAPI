@@ -72,7 +72,7 @@ namespace ShoppingAPI.Controllers
             return RedirectToAction(nameof(AuthUserClaims));
         }
 
-        [HttpGet("user/claims")]
+        [HttpGet("claims")]
         public ActionResult AuthUserClaims()
         {
             var claims = User.Claims.Select(c => new { c.Type, c.Issuer, c.Value }).ToList();
