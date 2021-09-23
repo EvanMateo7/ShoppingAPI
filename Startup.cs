@@ -1,36 +1,24 @@
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using ShoppingAPI.Areas.Identity;
 using ShoppingAPI.Data;
 using ShoppingAPI.Data.Repositories;
 using ShoppingAPI.Domain;
 using ShoppingAPI.Domain.Repository;
-using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
-using AutoMapper;
 using ShoppingAPI.Pages;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using ShoppingAPI.Filters;
+using ShoppingAPI.Middlewares;
 
 namespace ShoppingAPI
 {
-    public class Startup
+  public class Startup
     {
         public IConfiguration Configuration { get; }
         private readonly IWebHostEnvironment _env;
@@ -66,6 +54,7 @@ namespace ShoppingAPI
             services.AddScoped<SignInManager<AppUser>, AppSignInManager<AppUser>>();
             //services.AddScoped<IClaimsTransformation, AppClaimsTransformation>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            services.AddScoped<ExceptionHandling>();
 
             // Repositories
             services.AddScoped<IAppUserRepository, AppUserRepository>();
@@ -82,7 +71,7 @@ namespace ShoppingAPI
             {
                 options.AddPolicy("test", policy => policy.RequireClaim("test"));
             });
-            services.AddControllers(options => options.Filters.Add(typeof(ExceptionFilter)))
+            services.AddControllers()
               .AddNewtonsoftJson(x =>
               {
                   x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
@@ -105,6 +94,8 @@ namespace ShoppingAPI
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseMiddleware<ExceptionHandling>();
 
             app.UseAuthentication();
 
