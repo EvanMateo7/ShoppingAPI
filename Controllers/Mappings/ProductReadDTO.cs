@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ShoppingAPI.Data.Mappings
+namespace ShoppingAPI.Controllers.Mappings
 {
     public class ProductReadDTO
     {

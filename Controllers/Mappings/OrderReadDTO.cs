@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ShoppingAPI.Domain;
 
-namespace ShoppingAPI.Data.Mappings
+namespace ShoppingAPI.Controllers.Mappings
 {
     public class OrderReadDTO
     {

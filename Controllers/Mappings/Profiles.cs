@@ -1,7 +1,7 @@
 using AutoMapper;
 using ShoppingAPI.Domain;
 
-namespace ShoppingAPI.Data.Mappings
+namespace ShoppingAPI.Controllers.Mappings
 {
     public class Profiles : Profile
     {

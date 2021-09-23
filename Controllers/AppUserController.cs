@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ShoppingAPI.Data.Mappings;
+using ShoppingAPI.Controllers.Mappings;
 using ShoppingAPI.Data.Repositories;
 using ShoppingAPI.Data.Repositories.Exceptions;
 using ShoppingAPI.Data.Repositories.Records;
@@ -100,6 +100,7 @@ namespace ShoppingAPI.Controllers
       return CreatedAtAction(nameof(GetUserCart), cartResult);
     }
 
+    // TODO: Test for concurrency
     [Authorize]
     [HttpPost("cart/checkout")]
     public ActionResult Checkout()

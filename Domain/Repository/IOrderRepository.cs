@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using ShoppingAPI.Data.Mappings;
 using ShoppingAPI.Data.Repositories.Records;
 using ShoppingAPI.Domain;
 

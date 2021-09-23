@@ -6,11 +6,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using ShoppingAPI.Domain;
 
-namespace ShoppingAPI.Data.Mappings
+namespace ShoppingAPI.Controllers.Mappings
 {
-  public class OrderCreateDTO
+  public class OrderProductCreateDTO
   {
     [Required]
-    public IEnumerable<Guid> ProductIDs { get; set; }
+    public Guid ProductId { get; set; }
+
+    // TODO: Add validation using FLuentValidator
+    public float Quantity { get; set; }
   }
 }

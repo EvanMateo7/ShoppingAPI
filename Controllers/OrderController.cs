@@ -8,7 +8,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ShoppingAPI.Data.Mappings;
+using ShoppingAPI.Controllers.Mappings;
 using ShoppingAPI.Data.Repositories.Exceptions;
 using ShoppingAPI.Data.Repositories.Records;
 using ShoppingAPI.Data.Util;
