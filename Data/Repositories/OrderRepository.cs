@@ -27,6 +27,8 @@ namespace ShoppingAPI.Data.Repositories
       var newOrder = new Order() { UserId = user.Id };
       _appContext.Database.CreateExecutionStrategy().ExecuteInTransaction(() =>
       {
+        _appContext.Orders.Add(newOrder);
+
         // Add cart products to new order
         newOrder = AddRemoveProductInOrder(newOrder, productQuantities);
 
@@ -119,7 +121,6 @@ namespace ShoppingAPI.Data.Repositories
           }
 
           // Save
-          _appContext.Orders.Add(order);
           _appContext.SaveChanges();
           return order;
         }
