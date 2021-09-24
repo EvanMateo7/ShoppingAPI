@@ -28,10 +28,9 @@ namespace ShoppingAPI.Data.Repositories
       _appContext.Database.CreateExecutionStrategy().ExecuteInTransaction(() =>
       {
         _appContext.Orders.Add(newOrder);
-        _appContext.SaveChanges();
 
         // Add cart products to new order
-        newOrder = AddRemoveProductInOrder(newOrder, productQuantities);
+        newOrder = AddRemoveProductInOrder(newOrder.OrderId, productQuantities);
 
         // Clear cart after creating order
         _appContext.Cart.RemoveRange(user.CartProducts);
@@ -43,7 +42,7 @@ namespace ShoppingAPI.Data.Repositories
       return newOrder;
     }
 
-    public Order AddRemoveProductInOrder(Order order, IEnumerable<ProductQuantity> productQuantities)
+    public Order AddRemoveProductInOrder(Guid orderId, IEnumerable<ProductQuantity> productQuantities)
     {
       bool saveFailed;
       do
@@ -51,10 +50,17 @@ namespace ShoppingAPI.Data.Repositories
         saveFailed = false;
         try
         {
-          // Order
+          // Find existing or newly added order
+          var order = _appContext.Orders
+                    .Where(o => o.OrderId == orderId)
+                    .Include(o => o.OrderProducts)
+                    .FirstOrDefault() ?? 
+                    _appContext.Orders.Local.Where(o => o.OrderId == orderId).AsQueryable()
+                    .Include(o => o.OrderProducts)
+                    .FirstOrDefault();
           if (order == null)
           {
-            throw new DoesNotExist<Order>(new List<Guid> { order.OrderId });
+            throw new DoesNotExist<Order>(new List<Guid> { orderId });
           }
 
           // Products

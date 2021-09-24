@@ -66,12 +66,7 @@ namespace ShoppingAPI.Controllers
     [HttpPost("{orderId}")]
     public ActionResult AddRemoveProduct(Guid orderId, ProductQuantity productQuantity)
     {
-      var order = _orderRepo
-                    .Find(o => o.OrderId == orderId)
-                    .Include(o => o.OrderProducts)
-                    .FirstOrDefault();
-
-      order = _orderRepo.AddRemoveProductInOrder(order, new List<ProductQuantity> { productQuantity });
+      var order = _orderRepo.AddRemoveProductInOrder(orderId, new List<ProductQuantity> { productQuantity });
 
       var orderReadDTO = _mapper.Map<OrderReadDTO>(order);
 
