@@ -55,6 +55,7 @@ namespace ShoppingAPI.Data.Repositories
           {
             throw new DoesNotExist<Order>(new List<Guid> { order.OrderId });
           }
+          _appContext.Attach(order);
 
           // Products
           var productIds = productQuantities.Select(pq => pq.ProductId);
