@@ -28,6 +28,7 @@ namespace ShoppingAPI.Data.Repositories
       _appContext.Database.CreateExecutionStrategy().ExecuteInTransaction(() =>
       {
         _appContext.Orders.Add(newOrder);
+        _appContext.SaveChanges();
 
         // Add cart products to new order
         newOrder = AddRemoveProductInOrder(newOrder, productQuantities);
@@ -55,7 +56,6 @@ namespace ShoppingAPI.Data.Repositories
           {
             throw new DoesNotExist<Order>(new List<Guid> { order.OrderId });
           }
-          _appContext.Attach(order);
 
           // Products
           var productIds = productQuantities.Select(pq => pq.ProductId);
