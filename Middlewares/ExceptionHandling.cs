@@ -58,7 +58,7 @@ namespace ShoppingAPI.Middlewares
             }
 
           default:
-            break;
+            throw;
         }
 
         if (result is not null)
