@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <UserSecretsId>5b064e59-4db8-4904-b465-be4789c1dbc3</UserSecretsId>
+    <AssemblyName>ShoppingAPI</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

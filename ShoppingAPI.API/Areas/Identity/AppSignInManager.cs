@@ -30,6 +30,10 @@ namespace ShoppingAPI.Areas.Identity
         {
         }
 
+        /// <summary>
+        ///  <para>Sign-in with external provider claims.</para>
+        ///  <para>This copies the external claims to the cookie.</para>
+        /// </summary>
         public async Task SignInAsyncWithExternalClaims(TUser user,
                                                         bool isPersistent,
                                                         ExternalLoginInfo externalLoginInfo)
