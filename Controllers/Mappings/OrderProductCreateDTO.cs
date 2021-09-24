@@ -13,7 +13,6 @@ namespace ShoppingAPI.Controllers.Mappings
     [Required]
     public Guid ProductId { get; set; }
 
-    // TODO: Add validation using FLuentValidator
     public float Quantity { get; set; }
   }
 }
