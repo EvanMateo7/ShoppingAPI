@@ -7,17 +7,17 @@ namespace ShoppingAPI.Domain
 {
   public class Product : IDomainEntity, IAggregateRoot
     {
-        public int Id { get; private set; }
+        public int Id { get; set; }
 
-        public Guid ProductId { get; private set; }
+        public Guid ProductId { get; set; }
 
-        public string UserId { get; private set; }
-        public AppUser User { get; private set; }
+        public string UserId { get; set; }
+        public AppUser User { get; set; }
 
-        public string Name { get; private set; }
+        public string Name { get; set; }
 
 #nullable enable
-        public string? Description { get; private set; }
+        public string? Description { get; set; }
 #nullable disable
 
         private float _quantity;
@@ -33,12 +33,12 @@ namespace ShoppingAPI.Domain
           } 
         }
 
-        public decimal Price { get; private set; }
+        public decimal Price { get; set; }
 
-        public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        public byte[] Timestamp { get; private set; }
+        public byte[] Timestamp { get; set; }
 
-        public ICollection<OrderProduct> OrderProducts { get; private set; } = new HashSet<OrderProduct>();
+        public ICollection<OrderProduct> OrderProducts { get; set; } = new HashSet<OrderProduct>();
     }
 }
