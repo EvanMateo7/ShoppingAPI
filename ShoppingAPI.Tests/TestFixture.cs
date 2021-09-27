@@ -30,8 +30,9 @@ namespace ShoppingAPI.Tests
         .Options;
 
       Context = new ApplicationContext(options);
-
       ProductRepo = new ProductRepository(Context);
+      
+      Context.Database.EnsureCreated();
     }
 
     public void Initialize()
