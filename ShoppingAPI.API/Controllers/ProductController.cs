@@ -6,12 +6,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ShoppingAPI.Controllers.Mappings;
-using ShoppingAPI.Data.Util;
-using ShoppingAPI.Domain;
-using ShoppingAPI.Domain.Repository;
+using ShoppingAPI.API.Controllers.Mappings;
+using ShoppingAPI.Domain.AggregateRoots.AppUserAggregate;
+using ShoppingAPI.Domain.AggregateRoots.ProductAggregate;
+using ShoppingAPI.Domain.ValueObjects;
 
-namespace ShoppingAPI.Controllers
+namespace ShoppingAPI.API.Controllers
 {
   [ApiController]
   [Route("api/product")]
@@ -66,7 +66,7 @@ namespace ShoppingAPI.Controllers
 
       try
       {
-        var num = _productRepo.Create(newProduct);   
+        var num = _productRepo.Create(newProduct);
       }
       catch (DbUpdateException)
       {
@@ -93,9 +93,9 @@ namespace ShoppingAPI.Controllers
 
       // Apply patch
       productPatchDoc.ApplyTo(productToPatch, ModelState);
-      if(!TryValidateModel(productToPatch))
+      if (!TryValidateModel(productToPatch))
       {
-          return ValidationProblem(ModelState);
+        return ValidationProblem(ModelState);
       }
 
       // Update product

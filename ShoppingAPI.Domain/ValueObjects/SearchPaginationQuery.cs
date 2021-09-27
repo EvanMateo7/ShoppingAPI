@@ -1,12 +1,14 @@
 
-namespace ShoppingAPI.Data.Util
+namespace ShoppingAPI.Domain.ValueObjects
 {
   public class SearchPaginationQuery : PaginationQuery
   {
     private string _searchTerm;
-    public string SearchTerm { 
+    public string SearchTerm
+    {
       get => _searchTerm;
-      set {
+      set
+      {
         _searchTerm = (value != null ? value.Trim() : "");
       }
     }

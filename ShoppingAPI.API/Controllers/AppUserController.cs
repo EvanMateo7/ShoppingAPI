@@ -1,22 +1,18 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ShoppingAPI.Controllers.Mappings;
-using ShoppingAPI.Data.Repositories;
-using ShoppingAPI.Data.Repositories.Exceptions;
-using ShoppingAPI.Data.Repositories.Records;
-using ShoppingAPI.Data.Util;
-using ShoppingAPI.Domain;
-using ShoppingAPI.Domain.Repository;
+using ShoppingAPI.API.Controllers.Mappings;
+using ShoppingAPI.API.Data.Repositories.Exceptions;
+using ShoppingAPI.Domain.AggregateRoots.AppUserAggregate;
+using ShoppingAPI.Domain.AggregateRoots.OrderAggregate;
+using ShoppingAPI.Domain.AggregateRoots.ProductAggregate;
 
-namespace ShoppingAPI.Controllers
+namespace ShoppingAPI.API.Controllers
 {
   [ApiController]
   [Route("api/user")]
@@ -91,7 +87,7 @@ namespace ShoppingAPI.Controllers
                       .ThenInclude(cp => cp.Product)
                       .FirstOrDefault();
 
-      IEnumerable<Cart> cart = _appUserRepo.AddRemoveProductInCart(user.Id, 
+      IEnumerable<Cart> cart = _appUserRepo.AddRemoveProductInCart(user.Id,
                                             orderProductCreate.ProductId,
                                             orderProductCreate.Quantity);
 
@@ -111,7 +107,7 @@ namespace ShoppingAPI.Controllers
                       .Include(u => u.CartProducts)
                       .ThenInclude(u => u.Product)
                       .FirstOrDefault();
-                    
+
       if (user.CartProducts.Count() == 0)
       {
         throw new EmptyCart();
@@ -121,9 +117,9 @@ namespace ShoppingAPI.Controllers
 
       var orderReadDTO = _mapper.Map<OrderReadDTO>(orderCreated);
 
-      return CreatedAtAction(nameof(OrderController.GetOrderById), 
-                              nameof(OrderController).Replace(nameof(Controller), string.Empty), 
-                              new { id = orderReadDTO.OrderId }, 
+      return CreatedAtAction(nameof(OrderController.GetOrderById),
+                              nameof(OrderController).Replace(nameof(Controller), string.Empty),
+                              new { id = orderReadDTO.OrderId },
                               orderReadDTO);
     }
   }

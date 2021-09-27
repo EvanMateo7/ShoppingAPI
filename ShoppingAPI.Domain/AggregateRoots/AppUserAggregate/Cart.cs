@@ -1,7 +1,7 @@
 ﻿using ShoppingAPI.Domain.Exceptions;
-using ShoppingAPI.Domain.Interfaces;
+using ShoppingAPI.Domain.AggregateRoots.ProductAggregate;
 
-namespace ShoppingAPI.Domain
+namespace ShoppingAPI.Domain.AggregateRoots.AppUserAggregate
 {
   public class Cart : IDomainEntity
   {

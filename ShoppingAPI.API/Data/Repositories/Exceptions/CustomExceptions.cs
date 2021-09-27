@@ -3,15 +3,16 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using ShoppingAPI.Domain.Interfaces;
-using ShoppingAPI.Data.Repositories.Records;
+using ShoppingAPI.Domain.AggregateRoots;
+using ShoppingAPI.Domain.AggregateRoots.ProductAggregate;
+using ShoppingAPI.Domain.ValueObjects;
 
-namespace ShoppingAPI.Data.Repositories.Exceptions
+namespace ShoppingAPI.API.Data.Repositories.Exceptions
 {
   public class DoesNotExist : Exception
   {
     public IEnumerable<dynamic> Ids { get; init; }
-    
+
     public DoesNotExist(IEnumerable<dynamic> ids, string msg) : base(msg)
     {
       Ids = ids;
@@ -37,13 +38,13 @@ namespace ShoppingAPI.Data.Repositories.Exceptions
     {
     }
   }
-  
+
   public class NotEnoughProductsInStock : Exception
   {
     public static string message = "Not enough products in stock";
 
     public IEnumerable<ProductQuantity> productQuantities { get; init; }
-    
+
     public NotEnoughProductsInStock(IEnumerable<ProductQuantity> data) : base(message)
     {
       productQuantities = data;

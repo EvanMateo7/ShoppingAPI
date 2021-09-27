@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using ShoppingAPI.Data.Repositories.Records;
-using ShoppingAPI.Domain;
+using ShoppingAPI.Domain.AggregateRoots.AppUserAggregate;
+using ShoppingAPI.Domain.ValueObjects;
 
-namespace ShoppingAPI.Domain.Repository
+namespace ShoppingAPI.Domain.AggregateRoots.OrderAggregate
 {
   public interface IOrderRepository : IRepositoryBase<Order>
   {

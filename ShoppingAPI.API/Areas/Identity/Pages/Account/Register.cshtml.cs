@@ -13,9 +13,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
-using ShoppingAPI.Domain;
+using ShoppingAPI.Domain.AggregateRoots.AppUserAggregate;
 
-namespace ShoppingAPI.Areas.Identity.Pages.Account
+namespace ShoppingAPI.API.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
     public class RegisterModel : PageModel

@@ -1,12 +1,10 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using ShoppingAPI.Domain.Interfaces;
-using ShoppingAPI.Domain.Repository;
+using ShoppingAPI.Domain.AggregateRoots;
 
-namespace ShoppingAPI.Data.Repositories
+namespace ShoppingAPI.API.Data.Repositories
 {
   public abstract class RepositoryBase<T> : IRepositoryBase<T> where T : class, IAggregateRoot
   {

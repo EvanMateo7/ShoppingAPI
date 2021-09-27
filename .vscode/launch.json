@@ -9,7 +9,7 @@
       "type": "coreclr",
       "request": "launch",
       "preLaunchTask": "build",
-      "program": "${workspaceFolder}/ShoppingAPI.API/bin/Debug/net5.0/ShoppingAPI.dll",
+      "program": "${workspaceFolder}/ShoppingAPI.API/bin/Debug/net5.0/ShoppingAPI.API.dll",
       "args": [],
       "cwd": "${workspaceFolder}/ShoppingAPI.API",
       "stopAtEntry": false,

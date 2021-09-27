@@ -1,5 +1,5 @@
 
-namespace ShoppingAPI.Data.Util
+namespace ShoppingAPI.Domain.ValueObjects
 {
   public class PaginationQuery
   {
@@ -7,17 +7,21 @@ namespace ShoppingAPI.Data.Util
     private const int defaultPageSize = 15;
 
     private int _pageNumber;
-    public int PageNumber { 
+    public int PageNumber
+    {
       get => _pageNumber;
-      set {
+      set
+      {
         _pageNumber = (value >= 1) ? value : defaultPageNumer;
       }
     }
-    
+
     private int _pageSize;
-    public int PageSize { 
+    public int PageSize
+    {
       get => _pageSize;
-      set {
+      set
+      {
         _pageSize = (value >= 2 && value <= 50) ? value : defaultPageSize;
       }
     }

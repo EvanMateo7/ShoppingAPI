@@ -1,10 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using ShoppingAPI.Data.Util;
-using ShoppingAPI.Domain;
 
-namespace ShoppingAPI.Domain.Repository
+namespace ShoppingAPI.Domain.AggregateRoots.AppUserAggregate
 {
   public interface IAppUserRepository : IRepositoryBase<AppUser>
   {

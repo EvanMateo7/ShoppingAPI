@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using ShoppingAPI.Data;
+using ShoppingAPI.API.Data;
 
-namespace ShoppingAPI.Migrations
+namespace ShoppingAPI.API.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
     [Migration("20210908205528_Add-Index-ProductId")]
@@ -156,7 +156,7 @@ namespace ShoppingAPI.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("ShoppingAPI.Domain.AppUser", b =>
+            modelBuilder.Entity("ShoppingAPI.API.Domain.AppUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -227,7 +227,7 @@ namespace ShoppingAPI.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("ShoppingAPI.Domain.Order", b =>
+            modelBuilder.Entity("ShoppingAPI.API.Domain.Order", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -250,7 +250,7 @@ namespace ShoppingAPI.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("ShoppingAPI.Domain.OrderProduct", b =>
+            modelBuilder.Entity("ShoppingAPI.API.Domain.OrderProduct", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -278,7 +278,7 @@ namespace ShoppingAPI.Migrations
                     b.ToTable("OrderProducts");
                 });
 
-            modelBuilder.Entity("ShoppingAPI.Domain.Product", b =>
+            modelBuilder.Entity("ShoppingAPI.API.Domain.Product", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -331,7 +331,7 @@ namespace ShoppingAPI.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("ShoppingAPI.Domain.AppUser", null)
+                    b.HasOne("ShoppingAPI.API.Domain.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -340,7 +340,7 @@ namespace ShoppingAPI.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("ShoppingAPI.Domain.AppUser", null)
+                    b.HasOne("ShoppingAPI.API.Domain.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -355,7 +355,7 @@ namespace ShoppingAPI.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ShoppingAPI.Domain.AppUser", null)
+                    b.HasOne("ShoppingAPI.API.Domain.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -364,31 +364,31 @@ namespace ShoppingAPI.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("ShoppingAPI.Domain.AppUser", null)
+                    b.HasOne("ShoppingAPI.API.Domain.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ShoppingAPI.Domain.Order", b =>
+            modelBuilder.Entity("ShoppingAPI.API.Domain.Order", b =>
                 {
-                    b.HasOne("ShoppingAPI.Domain.AppUser", "User")
+                    b.HasOne("ShoppingAPI.API.Domain.AppUser", "User")
                         .WithMany("Orders")
                         .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("ShoppingAPI.Domain.OrderProduct", b =>
+            modelBuilder.Entity("ShoppingAPI.API.Domain.OrderProduct", b =>
                 {
-                    b.HasOne("ShoppingAPI.Domain.Order", "Order")
+                    b.HasOne("ShoppingAPI.API.Domain.Order", "Order")
                         .WithMany("OrderProducts")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ShoppingAPI.Domain.Product", "Product")
+                    b.HasOne("ShoppingAPI.API.Domain.Product", "Product")
                         .WithMany("OrderProducts")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -399,28 +399,28 @@ namespace ShoppingAPI.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("ShoppingAPI.Domain.Product", b =>
+            modelBuilder.Entity("ShoppingAPI.API.Domain.Product", b =>
                 {
-                    b.HasOne("ShoppingAPI.Domain.AppUser", "User")
+                    b.HasOne("ShoppingAPI.API.Domain.AppUser", "User")
                         .WithMany("Products")
                         .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("ShoppingAPI.Domain.AppUser", b =>
+            modelBuilder.Entity("ShoppingAPI.API.Domain.AppUser", b =>
                 {
                     b.Navigation("Orders");
 
                     b.Navigation("Products");
                 });
 
-            modelBuilder.Entity("ShoppingAPI.Domain.Order", b =>
+            modelBuilder.Entity("ShoppingAPI.API.Domain.Order", b =>
                 {
                     b.Navigation("OrderProducts");
                 });
 
-            modelBuilder.Entity("ShoppingAPI.Domain.Product", b =>
+            modelBuilder.Entity("ShoppingAPI.API.Domain.Product", b =>
                 {
                     b.Navigation("OrderProducts");
                 });

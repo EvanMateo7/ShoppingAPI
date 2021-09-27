@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <UserSecretsId>5b064e59-4db8-4904-b465-be4789c1dbc3</UserSecretsId>
-    <AssemblyName>ShoppingAPI</AssemblyName>
+    <AssemblyName>ShoppingAPI.API</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,6 +24,10 @@
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ShoppingAPI.Domain\ShoppingAPI.Domain.csproj" />
   </ItemGroup>
 
 </Project>

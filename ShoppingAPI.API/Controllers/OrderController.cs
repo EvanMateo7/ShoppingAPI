@@ -3,20 +3,16 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using ShoppingAPI.Controllers.Mappings;
-using ShoppingAPI.Data.Repositories.Exceptions;
-using ShoppingAPI.Data.Repositories.Records;
-using ShoppingAPI.Data.Util;
-using ShoppingAPI.Domain;
-using ShoppingAPI.Domain.Exceptions;
-using ShoppingAPI.Domain.Repository;
+using ShoppingAPI.API.Controllers.Mappings;
+using ShoppingAPI.Domain.AggregateRoots.AppUserAggregate;
+using ShoppingAPI.Domain.AggregateRoots.OrderAggregate;
+using ShoppingAPI.Domain.AggregateRoots.ProductAggregate;
+using ShoppingAPI.Domain.ValueObjects;
 
-namespace ShoppingAPI.Controllers
+namespace ShoppingAPI.API.Controllers
 {
   [ApiController]
   [Route("api/order")]

@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace ShoppingAPI.Controllers.Mappings
+namespace ShoppingAPI.API.Controllers.Mappings
 {
   public class ProductCreateDTO
   {

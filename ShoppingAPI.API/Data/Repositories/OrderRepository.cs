@@ -2,14 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using ShoppingAPI.Data.Repositories.Exceptions;
-using ShoppingAPI.Data.Repositories.Records;
-using ShoppingAPI.Domain;
+using ShoppingAPI.API.Data.Repositories.Exceptions;
+using ShoppingAPI.Domain.AggregateRoots.AppUserAggregate;
+using ShoppingAPI.Domain.AggregateRoots.OrderAggregate;
+using ShoppingAPI.Domain.AggregateRoots.ProductAggregate;
 using ShoppingAPI.Domain.Exceptions;
-using ShoppingAPI.Domain.Repository;
-using static ShoppingAPI.Data.Repositories.Exceptions.NotEnoughProductsInStock;
+using ShoppingAPI.Domain.ValueObjects;
 
-namespace ShoppingAPI.Data.Repositories
+namespace ShoppingAPI.API.Data.Repositories
 {
   public class OrderRepository : RepositoryBase<Order>, IOrderRepository
   {
@@ -34,7 +34,7 @@ namespace ShoppingAPI.Data.Repositories
 
         // Clear cart after creating order
         _appContext.Cart.RemoveRange(user.CartProducts);
-        
+
         _appContext.SaveChanges();
 
       }, () => true);
@@ -54,7 +54,7 @@ namespace ShoppingAPI.Data.Repositories
           var order = _appContext.Orders
                     .Where(o => o.OrderId == orderId)
                     .Include(o => o.OrderProducts)
-                    .FirstOrDefault() ?? 
+                    .FirstOrDefault() ??
                     _appContext.Orders.Local.Where(o => o.OrderId == orderId).AsQueryable()
                     .Include(o => o.OrderProducts)
                     .FirstOrDefault();
@@ -75,7 +75,7 @@ namespace ShoppingAPI.Data.Repositories
             throw new DoesNotExist<Product>(nonExistingProducts);
           }
 
-          foreach(var product in products)
+          foreach (var product in products)
           {
             // Validate product quantity change
             var productsNotEnoughStock = new List<ProductQuantity>();
@@ -95,7 +95,7 @@ namespace ShoppingAPI.Data.Repositories
 
             if (productsNotEnoughStock.Count() > 0)
             {
-              throw new NotEnoughProductsInStock(new ProductQuantity(product.ProductId,quantity));
+              throw new NotEnoughProductsInStock(new ProductQuantity(product.ProductId, quantity));
             }
 
             // Add/Remove order product or update existing one

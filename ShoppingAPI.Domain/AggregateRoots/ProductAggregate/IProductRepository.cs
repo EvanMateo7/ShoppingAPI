@@ -1,8 +1,7 @@
 using System.Linq;
-using ShoppingAPI.Data.Util;
-using ShoppingAPI.Domain;
+using ShoppingAPI.Domain.ValueObjects;
 
-namespace ShoppingAPI.Domain.Repository
+namespace ShoppingAPI.Domain.AggregateRoots.ProductAggregate
 {
   public interface IProductRepository : IRepositoryBase<Product>
   {

@@ -1,5 +1,5 @@
 using System.Linq;
-using ShoppingAPI.Domain;
+using ShoppingAPI.Domain.AggregateRoots.ProductAggregate;
 using Xunit;
 using Xunit.Abstractions;
 

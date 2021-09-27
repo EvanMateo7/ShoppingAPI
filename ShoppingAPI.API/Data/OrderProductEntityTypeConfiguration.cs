@@ -1,30 +1,26 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using ShoppingAPI.Domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using ShoppingAPI.Domain.AggregateRoots.OrderAggregate;
 
-namespace ShoppingAPI.Data
+namespace ShoppingAPI.API.Data
 {
-    public class OrderProductEntityTypeConfiguration : IEntityTypeConfiguration<OrderProduct>
+  public class OrderProductEntityTypeConfiguration : IEntityTypeConfiguration<OrderProduct>
+  {
+    public void Configure(EntityTypeBuilder<OrderProduct> builder)
     {
-        public void Configure(EntityTypeBuilder<OrderProduct> builder)
-        {
-            builder.Property(e => e.Price).HasColumnType("decimal(18, 2)");
+      builder.Property(e => e.Price).HasColumnType("decimal(18, 2)");
 
-            builder.HasOne(d => d.Order)
-                .WithMany(p => p.OrderProducts)
-                .HasForeignKey(d => d.OrderId);
+      builder.HasOne(d => d.Order)
+          .WithMany(p => p.OrderProducts)
+          .HasForeignKey(d => d.OrderId);
 
-            builder.HasOne(d => d.Product)
-                .WithMany(p => p.OrderProducts)
-                .HasForeignKey(d => d.ProductId);
+      builder.HasOne(d => d.Product)
+          .WithMany(p => p.OrderProducts)
+          .HasForeignKey(d => d.ProductId);
 
-            builder.HasIndex(e => e.OrderId, "IX_OrderProducts_OrderId");
+      builder.HasIndex(e => e.OrderId, "IX_OrderProducts_OrderId");
 
-            builder.HasIndex(e => e.ProductId, "IX_OrderProducts_ProductId");
-        }
+      builder.HasIndex(e => e.ProductId, "IX_OrderProducts_ProductId");
     }
+  }
 }

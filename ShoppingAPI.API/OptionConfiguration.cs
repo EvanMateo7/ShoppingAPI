@@ -10,7 +10,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace ShoppingAPI.Pages
+namespace ShoppingAPI.API.Pages
 {
     public class OptionConfiguration
     {

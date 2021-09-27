@@ -1,10 +1,8 @@
 using System;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
-using ShoppingAPI.Domain.Interfaces;
 
-namespace ShoppingAPI.Domain.Repository
+namespace ShoppingAPI.Domain.AggregateRoots
 {
   public interface IRepositoryBase<T> where T : IAggregateRoot
   {
@@ -13,7 +11,7 @@ namespace ShoppingAPI.Domain.Repository
     int Create(T entity);
 
     void Update(T entity);
-    
+
     void Delete(T entity);
   }
 }

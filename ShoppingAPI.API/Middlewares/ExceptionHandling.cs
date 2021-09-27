@@ -3,10 +3,10 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ShoppingAPI.Controllers;
-using ShoppingAPI.Data.Repositories.Exceptions;
+using ShoppingAPI.API.Controllers;
+using ShoppingAPI.API.Data.Repositories.Exceptions;
 
-namespace ShoppingAPI.Middlewares
+namespace ShoppingAPI.API.Middlewares
 {
   public class ExceptionHandling : IMiddleware
   {

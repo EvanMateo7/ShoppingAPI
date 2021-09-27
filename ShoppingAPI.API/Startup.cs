@@ -7,14 +7,15 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using ShoppingAPI.Areas.Identity;
-using ShoppingAPI.Data;
-using ShoppingAPI.Data.Repositories;
-using ShoppingAPI.Domain;
-using ShoppingAPI.Domain.Repository;
-using ShoppingAPI.Pages;
+using ShoppingAPI.API.Areas.Identity;
+using ShoppingAPI.API.Data;
+using ShoppingAPI.API.Data.Repositories;
+using ShoppingAPI.API.Pages;
 using System;
-using ShoppingAPI.Middlewares;
+using ShoppingAPI.API.Middlewares;
+using ShoppingAPI.Domain.AggregateRoots.AppUserAggregate;
+using ShoppingAPI.Domain.AggregateRoots.OrderAggregate;
+using ShoppingAPI.Domain.AggregateRoots.ProductAggregate;
 
 namespace ShoppingAPI
 {

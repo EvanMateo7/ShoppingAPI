@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using ShoppingAPI.Data.Repositories.Exceptions;
-using ShoppingAPI.Data.Repositories.Records;
-using ShoppingAPI.Domain;
+using ShoppingAPI.API.Data.Repositories.Exceptions;
+using ShoppingAPI.Domain.AggregateRoots.AppUserAggregate;
+using ShoppingAPI.Domain.AggregateRoots.ProductAggregate;
 using ShoppingAPI.Domain.Exceptions;
-using ShoppingAPI.Domain.Repository;
+using ShoppingAPI.Domain.ValueObjects;
 
-namespace ShoppingAPI.Data.Repositories
+namespace ShoppingAPI.API.Data.Repositories
 {
   public class AppUserRepository : RepositoryBase<AppUser>, IAppUserRepository
   {
