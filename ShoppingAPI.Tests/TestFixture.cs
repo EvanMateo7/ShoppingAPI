@@ -11,7 +11,7 @@ using ShoppingAPI.API.Data.Repositories;
 
 namespace ShoppingAPI.Tests
 {
-  public class TestFixture
+  public class TestFixture : IDisposable
   {
     public ApplicationContext Context { get; init; }
     public ProductRepository ProductRepo { get; init; }
@@ -32,12 +32,20 @@ namespace ShoppingAPI.Tests
       Context = new ApplicationContext(options);
 
       ProductRepo = new ProductRepository(Context);
-
-      Seed(Context);
     }
 
-    private void Seed(ApplicationContext context)
+    public void Initialize()
     {
+      Context.ChangeTracker.Clear();
+      Seed();
+    }
+
+    private void Seed()
+    {
+      // Reset database
+      Context.Database.EnsureDeleted();
+      Context.Database.EnsureCreated();
+
       // Users
       Users = new[]
       {
@@ -46,8 +54,8 @@ namespace ShoppingAPI.Tests
 
       foreach (var user in Users)
       {
-        var userStore = new UserStore<AppUser>(context);
-        var result = userStore.CreateAsync(user);
+        var userStore = new UserStore<AppUser>(Context);
+        var result = userStore.CreateAsync(user).Result;
       }
 
       // Products
@@ -59,9 +67,15 @@ namespace ShoppingAPI.Tests
         new Product() { UserId = userId, Name = "item3", Quantity = 30, Price = 300 }
       };
 
-      context.Products.AddRange(Products);
+      Context.Products.AddRange(Products);
 
-      context.SaveChanges();
+      Context.SaveChanges();
+    }
+
+    public void Dispose()
+    {
+      Context.Database.EnsureDeleted();
+      Context.Dispose();
     }
   }
 }

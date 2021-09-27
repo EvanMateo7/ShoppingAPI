@@ -13,7 +13,12 @@ namespace ShoppingAPI.Tests
     public ProductRepositoryTest(ITestOutputHelper output, TestFixture fixture)
     {
       _output = output;
+
+      // Fixture is shared between all tests
       _fixture = fixture;
+
+      // Re-initialize fixture for each test
+      _fixture.Initialize();
     }
 
     [Fact]
@@ -40,24 +45,24 @@ namespace ShoppingAPI.Tests
     public void Update()
     {
       var firstProduct = _fixture.Products.First();
-      var firstProductQuery = _fixture.ProductRepo.Find(p => p.Name == firstProduct.Name);
-      var product = firstProductQuery.FirstOrDefault();
+      var firstProductQuery = _fixture.Context.Products.Where(p => p.Name == firstProduct.Name);
+      var product = _fixture.Context.Products.Where(p => p.Name == firstProduct.Name).FirstOrDefault();
 
       Assert.Equal(product.ProductId, firstProduct.ProductId);
 
       var newProductName = "newname";
-      firstProduct.Name = newProductName;
-      _fixture.ProductRepo.Update(firstProduct);
-      var updatedProduct = firstProductQuery.FirstOrDefault();
+      product.Name = newProductName;
+      _fixture.ProductRepo.Update(product);
+      _fixture.Context.Entry(product).Reload();
 
-      Assert.Equal(newProductName, updatedProduct.Name);
+      Assert.Equal(newProductName, product.Name);
     }
 
     [Fact]
     public void Delete()
     {
       var firstProduct = _fixture.Products.First();
-      var firstProductQuery = _fixture.ProductRepo.Find(p => p.Name == firstProduct.Name);
+      var firstProductQuery = _fixture.Context.Products.Where(p => p.Name == firstProduct.Name);
       var product = firstProductQuery.FirstOrDefault();
 
       Assert.Equal(product.ProductId, firstProduct.ProductId);
