@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore;
 using ShoppingAPI.Domain.AggregateRoots.ProductAggregate;
 using ShoppingAPI.Domain.ValueObjects;
 
-namespace ShoppingAPI.API.Data.Repositories
+namespace ShoppingAPI.API.Data.Services
 {
-  public class ProductRepository : RepositoryBase<Product>, IProductRepository
+  public class ProductService : ServiceBase<Product>, IProductService
   {
     private readonly ApplicationContext _appContext;
 
-    public ProductRepository(ApplicationContext appContext) : base(appContext)
+    public ProductService(ApplicationContext appContext) : base(appContext)
     {
       _appContext = appContext;
     }

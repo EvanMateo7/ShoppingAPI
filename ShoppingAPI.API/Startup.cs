@@ -9,7 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using ShoppingAPI.API.Areas.Identity;
 using ShoppingAPI.API.Data;
-using ShoppingAPI.API.Data.Repositories;
+using ShoppingAPI.API.Data.Services;
 using ShoppingAPI.API.Pages;
 using System;
 using ShoppingAPI.API.Middlewares;
@@ -58,9 +58,9 @@ namespace ShoppingAPI
       services.AddScoped<ExceptionHandling>();
 
       // Repositories
-      services.AddScoped<IAppUserRepository, AppUserRepository>();
-      services.AddScoped<IOrderRepository, OrderRepository>();
-      services.AddScoped<IProductRepository, ProductRepository>();
+      services.AddScoped<IAppUserService, AppUserService>();
+      services.AddScoped<IOrderService, OrderService>();
+      services.AddScoped<IProductService, ProductService>();
 
       services.AddAuthentication()
           .AddGoogle(_optionConfig.ConfigureGoogleOptions);

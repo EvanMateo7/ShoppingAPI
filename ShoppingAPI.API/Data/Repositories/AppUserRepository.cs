@@ -3,26 +3,26 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using ShoppingAPI.API.Data.Repositories.Exceptions;
+using ShoppingAPI.API.Data.Services.Exceptions;
 using ShoppingAPI.Domain.AggregateRoots.AppUserAggregate;
 using ShoppingAPI.Domain.AggregateRoots.OrderAggregate;
 using ShoppingAPI.Domain.AggregateRoots.ProductAggregate;
 using ShoppingAPI.Domain.Exceptions;
 using ShoppingAPI.Domain.ValueObjects;
 
-namespace ShoppingAPI.API.Data.Repositories
+namespace ShoppingAPI.API.Data.Services
 {
-  public class AppUserRepository : RepositoryBase<AppUser>, IAppUserRepository
+  public class AppUserService : ServiceBase<AppUser>, IAppUserService
   {
     private readonly ApplicationContext _appContext;
     private readonly UserManager<AppUser> _userManager;
-    private readonly IOrderRepository _orderRepo;
+    private readonly IOrderService _orderService;
 
-    public AppUserRepository(ApplicationContext appContext, UserManager<AppUser> userManager, IOrderRepository orderRepo) : base(appContext)
+    public AppUserService(ApplicationContext appContext, UserManager<AppUser> userManager, IOrderService orderRepo) : base(appContext)
     {
       _appContext = appContext;
       _userManager = userManager;
-      _orderRepo = orderRepo;
+      _orderService = orderRepo;
     }
 
     public Order CheckoutCart(string userId)
@@ -38,7 +38,7 @@ namespace ShoppingAPI.API.Data.Repositories
         throw new EmptyCart();
       }
 
-      return _orderRepo.CreateOrder(user);
+      return _orderService.CreateOrder(user);
     }
 
     public IEnumerable<Cart> AddRemoveProductInCart(string userId, Guid productId, float quantity)

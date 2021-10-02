@@ -2,20 +2,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using ShoppingAPI.API.Data.Repositories.Exceptions;
+using ShoppingAPI.API.Data.Services.Exceptions;
 using ShoppingAPI.Domain.AggregateRoots.AppUserAggregate;
 using ShoppingAPI.Domain.AggregateRoots.OrderAggregate;
 using ShoppingAPI.Domain.AggregateRoots.ProductAggregate;
 using ShoppingAPI.Domain.Exceptions;
 using ShoppingAPI.Domain.ValueObjects;
 
-namespace ShoppingAPI.API.Data.Repositories
+namespace ShoppingAPI.API.Data.Services
 {
-  public class OrderRepository : RepositoryBase<Order>, IOrderRepository
+  public class OrderService : ServiceBase<Order>, IOrderService
   {
     private readonly ApplicationContext _appContext;
 
-    public OrderRepository(ApplicationContext appContext) : base(appContext)
+    public OrderService(ApplicationContext appContext) : base(appContext)
     {
       _appContext = appContext;
     }

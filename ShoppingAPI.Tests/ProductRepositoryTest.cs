@@ -5,12 +5,12 @@ using Xunit.Abstractions;
 
 namespace ShoppingAPI.Tests
 {
-  public class ProductRepositoryTest : IClassFixture<TestFixture>
+  public class ProductServiceTest : IClassFixture<TestFixture>
   {
     private readonly ITestOutputHelper _output;
     private readonly TestFixture _fixture;
 
-    public ProductRepositoryTest(ITestOutputHelper output, TestFixture fixture)
+    public ProductServiceTest(ITestOutputHelper output, TestFixture fixture)
     {
       _output = output;
 
@@ -25,7 +25,7 @@ namespace ShoppingAPI.Tests
     public void Find()
     {
       var firstProduct = _fixture.Products.First();
-      var product = _fixture.ProductRepo.Find(p => p.Name == firstProduct.Name).FirstOrDefault();
+      var product = _fixture.ProductService.Find(p => p.Name == firstProduct.Name).FirstOrDefault();
 
       Assert.Equal(product.ProductId, firstProduct.ProductId);
     }
@@ -34,7 +34,7 @@ namespace ShoppingAPI.Tests
     public void Create()
     {
       var newProduct = new Product() { Name = "ass", Quantity = 1, Price = 2 };
-      _fixture.ProductRepo.Create(newProduct);
+      _fixture.ProductService.Create(newProduct);
       var queryProduct = _fixture.Context.Products.Where(p => p.Name == newProduct.Name).FirstOrDefault();
 
       Assert.NotNull(queryProduct);
@@ -52,7 +52,7 @@ namespace ShoppingAPI.Tests
 
       var newProductName = "newname";
       product.Name = newProductName;
-      _fixture.ProductRepo.Update(product);
+      _fixture.ProductService.Update(product);
       _fixture.Context.Entry(product).Reload();
 
       Assert.Equal(newProductName, product.Name);
@@ -67,7 +67,7 @@ namespace ShoppingAPI.Tests
 
       Assert.Equal(product.ProductId, firstProduct.ProductId);
 
-      _fixture.ProductRepo.Delete(firstProduct);
+      _fixture.ProductService.Delete(firstProduct);
       var updatedProduct = firstProductQuery.FirstOrDefault();
 
       Assert.Null(updatedProduct);

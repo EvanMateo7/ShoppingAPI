@@ -4,10 +4,9 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using ShoppingAPI.Domain.AggregateRoots;
-using ShoppingAPI.Domain.AggregateRoots.ProductAggregate;
 using ShoppingAPI.Domain.ValueObjects;
 
-namespace ShoppingAPI.API.Data.Repositories.Exceptions
+namespace ShoppingAPI.API.Data.Services.Exceptions
 {
   public class DoesNotExist : Exception
   {

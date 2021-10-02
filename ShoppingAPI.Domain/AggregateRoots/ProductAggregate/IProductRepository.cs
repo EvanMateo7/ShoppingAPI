@@ -3,7 +3,7 @@ using ShoppingAPI.Domain.ValueObjects;
 
 namespace ShoppingAPI.Domain.AggregateRoots.ProductAggregate
 {
-  public interface IProductRepository : IRepositoryBase<Product>
+  public interface IProductService : IServiceBase<Product>
   {
     IQueryable<Product> QueryAll(SearchPaginationQuery pageQuery);
   }

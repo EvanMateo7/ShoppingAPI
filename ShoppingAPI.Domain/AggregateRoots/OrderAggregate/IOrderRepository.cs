@@ -5,7 +5,7 @@ using ShoppingAPI.Domain.ValueObjects;
 
 namespace ShoppingAPI.Domain.AggregateRoots.OrderAggregate
 {
-  public interface IOrderRepository : IRepositoryBase<Order>
+  public interface IOrderService : IServiceBase<Order>
   {
     Order CreateOrder(AppUser user);
 

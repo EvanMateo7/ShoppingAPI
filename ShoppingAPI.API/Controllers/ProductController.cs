@@ -18,22 +18,22 @@ namespace ShoppingAPI.API.Controllers
   public class ProductController : ControllerBase
   {
     private readonly UserManager<AppUser> _userManager;
-    private readonly IProductRepository _productRepo;
+    private readonly IProductService _productService;
     private readonly IMapper _mapper;
 
     public ProductController(UserManager<AppUser> userManager,
-                                IProductRepository productRepo,
+                                IProductService productRepo,
                                 IMapper mapper)
     {
       _userManager = userManager;
-      _productRepo = productRepo;
+      _productService = productRepo;
       _mapper = mapper;
     }
 
     [HttpGet("{id}")]
     public ActionResult GetProductById(Guid id)
     {
-      var product = _productRepo
+      var product = _productService
                       .Find(p => p.ProductId == id)
                       .Include(p => p.User)
                       .FirstOrDefault();
@@ -50,7 +50,7 @@ namespace ShoppingAPI.API.Controllers
     [HttpGet]
     public ActionResult GetProducts([FromQuery] SearchPaginationQuery pageQuery)
     {
-      var product = _productRepo
+      var product = _productService
                       .QueryAll(pageQuery)
                       .Include(p => p.User)
                       .ToList();
@@ -66,7 +66,7 @@ namespace ShoppingAPI.API.Controllers
 
       try
       {
-        var num = _productRepo.Create(newProduct);
+        var num = _productService.Create(newProduct);
       }
       catch (DbUpdateException)
       {
@@ -81,7 +81,7 @@ namespace ShoppingAPI.API.Controllers
     [HttpPatch("{productId}")]
     public ActionResult UpdateProduct(Guid productId, JsonPatchDocument<ProductCreateDTO> productPatchDoc)
     {
-      var targetProduct = _productRepo.Find(p => p.ProductId == productId).FirstOrDefault();
+      var targetProduct = _productService.Find(p => p.ProductId == productId).FirstOrDefault();
 
       if (targetProduct == null)
       {
@@ -100,7 +100,7 @@ namespace ShoppingAPI.API.Controllers
 
       // Update product
       _mapper.Map(productToPatch, targetProduct);
-      _productRepo.Update(targetProduct);
+      _productService.Update(targetProduct);
 
       var patchedTargetProduct = _mapper.Map<ProductReadDTO>(targetProduct);
       return CreatedAtAction(nameof(GetProductById), new { name = patchedTargetProduct.Name }, patchedTargetProduct);
@@ -109,14 +109,14 @@ namespace ShoppingAPI.API.Controllers
     [HttpDelete]
     public ActionResult DeleteProduct(Guid productId)
     {
-      var targetProduct = _productRepo.Find(p => p.ProductId == productId).FirstOrDefault();
+      var targetProduct = _productService.Find(p => p.ProductId == productId).FirstOrDefault();
 
       if (targetProduct == null)
       {
         return NotFound();
       }
 
-      _productRepo.Delete(targetProduct);
+      _productService.Delete(targetProduct);
 
       return NoContent();
     }

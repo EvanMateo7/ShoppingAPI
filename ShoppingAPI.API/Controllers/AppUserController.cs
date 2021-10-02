@@ -7,10 +7,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ShoppingAPI.API.Controllers.Mappings;
-using ShoppingAPI.API.Data.Repositories.Exceptions;
 using ShoppingAPI.Domain.AggregateRoots.AppUserAggregate;
 using ShoppingAPI.Domain.AggregateRoots.OrderAggregate;
-using ShoppingAPI.Domain.AggregateRoots.ProductAggregate;
 
 namespace ShoppingAPI.API.Controllers
 {
@@ -19,15 +17,15 @@ namespace ShoppingAPI.API.Controllers
   public class AppUserController : ControllerBase
   {
     private readonly UserManager<AppUser> _userManager;
-    private readonly IAppUserRepository _appUserRepo;
+    private readonly IAppUserService _appUserService;
     private readonly IMapper _mapper;
 
     public AppUserController(UserManager<AppUser> userManager,
-                                IAppUserRepository appUserRepo,
+                                IAppUserService appUserRepo,
                                 IMapper mapper)
     {
       _userManager = userManager;
-      _appUserRepo = appUserRepo;
+      _appUserService = appUserRepo;
       _mapper = mapper;
     }
 
@@ -81,7 +79,7 @@ namespace ShoppingAPI.API.Controllers
                       .ThenInclude(cp => cp.Product)
                       .FirstOrDefault();
 
-      IEnumerable<Cart> cart = _appUserRepo.AddRemoveProductInCart(user.Id,
+      IEnumerable<Cart> cart = _appUserService.AddRemoveProductInCart(user.Id,
                                             orderProductCreate.ProductId,
                                             orderProductCreate.Quantity);
 
@@ -97,7 +95,7 @@ namespace ShoppingAPI.API.Controllers
     {
       var userId = User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier).Value;
 
-      Order orderCreated = _appUserRepo.CheckoutCart(userId);
+      Order orderCreated = _appUserService.CheckoutCart(userId);
 
       var orderReadDTO = _mapper.Map<OrderReadDTO>(orderCreated);
 

@@ -21,22 +21,22 @@ namespace ShoppingAPI.API.Controllers
   public class OrderController : ControllerBase
   {
     private readonly UserManager<AppUser> _userManager;
-    private readonly IOrderRepository _orderRepo;
+    private readonly IOrderService _orderService;
     private readonly IMapper _mapper;
 
     public OrderController(UserManager<AppUser> userManager,
-                                IOrderRepository orderRepo,
+                                IOrderService orderRepo,
                                 IMapper mapper)
     {
       _userManager = userManager;
-      _orderRepo = orderRepo;
+      _orderService = orderRepo;
       _mapper = mapper;
     }
 
     [HttpGet("{id}")]
     public ActionResult GetOrderById(Guid id)
     {
-      var order = _orderRepo
+      var order = _orderService
                       .Find(o => o.OrderId == id)
                       .FirstOrDefault();
 
@@ -53,7 +53,7 @@ namespace ShoppingAPI.API.Controllers
     public ActionResult GetOrders()
     {
       var userId = User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier).Value;
-      var orders = _orderRepo
+      var orders = _orderService
                       .Find(o => o.UserId == userId)
                       .ToList();
 
@@ -64,7 +64,7 @@ namespace ShoppingAPI.API.Controllers
     [HttpPost("{orderId}")]
     public ActionResult AddRemoveProduct(Guid orderId, ProductQuantity productQuantity)
     {
-      var order = _orderRepo.AddRemoveProductInOrder(orderId, new List<ProductQuantity> { productQuantity });
+      var order = _orderService.AddRemoveProductInOrder(orderId, new List<ProductQuantity> { productQuantity });
 
       var orderReadDTO = _mapper.Map<OrderReadDTO>(order);
 

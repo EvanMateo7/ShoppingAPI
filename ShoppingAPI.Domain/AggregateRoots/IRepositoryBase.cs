@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace ShoppingAPI.Domain.AggregateRoots
 {
-  public interface IRepositoryBase<T> where T : IAggregateRoot
+  public interface IServiceBase<T> where T : IAggregateRoot
   {
     IQueryable<T> Find(Expression<Func<T, bool>> expression);
 

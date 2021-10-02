@@ -4,7 +4,7 @@ using ShoppingAPI.Domain.AggregateRoots.OrderAggregate;
 
 namespace ShoppingAPI.Domain.AggregateRoots.AppUserAggregate
 {
-  public interface IAppUserRepository : IRepositoryBase<AppUser>
+  public interface IAppUserService : IServiceBase<AppUser>
   {
     Order CheckoutCart(string userId);
 

@@ -4,13 +4,13 @@ using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using ShoppingAPI.Domain.AggregateRoots;
 
-namespace ShoppingAPI.API.Data.Repositories
+namespace ShoppingAPI.API.Data.Services
 {
-  public abstract class RepositoryBase<T> : IRepositoryBase<T> where T : class, IAggregateRoot
+  public abstract class ServiceBase<T> : IServiceBase<T> where T : class, IAggregateRoot
   {
     private readonly ApplicationContext _appContext;
 
-    public RepositoryBase(ApplicationContext appContext)
+    public ServiceBase(ApplicationContext appContext)
     {
       _appContext = appContext;
     }
