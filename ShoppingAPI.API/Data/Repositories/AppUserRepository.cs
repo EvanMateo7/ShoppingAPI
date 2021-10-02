@@ -38,7 +38,7 @@ namespace ShoppingAPI.API.Data.Repositories
         throw new EmptyCart();
       }
 
-      return _orderRepo.Create(user);
+      return _orderRepo.CreateOrder(user);
     }
 
     public IEnumerable<Cart> AddRemoveProductInCart(string userId, Guid productId, float quantity)

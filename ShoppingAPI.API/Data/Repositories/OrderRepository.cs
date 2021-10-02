@@ -20,7 +20,7 @@ namespace ShoppingAPI.API.Data.Repositories
       _appContext = appContext;
     }
 
-    public Order Create(AppUser user)
+    public Order CreateOrder(AppUser user)
     {
       var productQuantities = user.CartProducts.Select(cp => new ProductQuantity(cp.Product.ProductId, cp.Quantity));
 
