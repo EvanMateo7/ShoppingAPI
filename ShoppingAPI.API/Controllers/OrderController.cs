@@ -16,6 +16,7 @@ using ShoppingAPI.Domain.ValueObjects;
 namespace ShoppingAPI.API.Controllers
 {
   [ApiController]
+  [Authorize]
   [Route("api/order")]
   public class OrderController : ControllerBase
   {
@@ -48,7 +49,6 @@ namespace ShoppingAPI.API.Controllers
       return Ok(orderResult);
     }
 
-    [Authorize]
     [HttpGet]
     public ActionResult GetOrders()
     {
