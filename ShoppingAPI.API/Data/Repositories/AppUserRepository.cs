@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ShoppingAPI.API.Data.Repositories.Exceptions;
 using ShoppingAPI.Domain.AggregateRoots.AppUserAggregate;
+using ShoppingAPI.Domain.AggregateRoots.OrderAggregate;
 using ShoppingAPI.Domain.AggregateRoots.ProductAggregate;
 using ShoppingAPI.Domain.Exceptions;
 using ShoppingAPI.Domain.ValueObjects;
@@ -15,11 +16,29 @@ namespace ShoppingAPI.API.Data.Repositories
   {
     private readonly ApplicationContext _appContext;
     private readonly UserManager<AppUser> _userManager;
+    private readonly IOrderRepository _orderRepo;
 
-    public AppUserRepository(ApplicationContext appContext, UserManager<AppUser> userManager) : base(appContext)
+    public AppUserRepository(ApplicationContext appContext, UserManager<AppUser> userManager, IOrderRepository orderRepo) : base(appContext)
     {
       _appContext = appContext;
       _userManager = userManager;
+      _orderRepo = orderRepo;
+    }
+
+    public Order CheckoutCart(string userId)
+    {
+      var user = _userManager.Users
+                      .Where(u => u.Id == userId)
+                      .Include(u => u.CartProducts)
+                      .ThenInclude(u => u.Product)
+                      .FirstOrDefault();
+
+      if (user.CartProducts.Count() == 0)
+      {
+        throw new EmptyCart();
+      }
+
+      return _orderRepo.Create(user);
     }
 
     public IEnumerable<Cart> AddRemoveProductInCart(string userId, Guid productId, float quantity)

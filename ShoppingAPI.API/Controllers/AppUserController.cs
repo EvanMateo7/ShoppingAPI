@@ -20,19 +20,16 @@ namespace ShoppingAPI.API.Controllers
   {
     private readonly UserManager<AppUser> _userManager;
     private readonly IAppUserRepository _appUserRepo;
-    private readonly IOrderRepository _orderRepo;
     private readonly IProductRepository _productRepo;
     private readonly IMapper _mapper;
 
     public AppUserController(UserManager<AppUser> userManager,
                                 IAppUserRepository appUserRepo,
-                                IOrderRepository orderRepo,
                                 IProductRepository productRepo,
                                 IMapper mapper)
     {
       _userManager = userManager;
       _appUserRepo = appUserRepo;
-      _orderRepo = orderRepo;
       _productRepo = productRepo;
       _mapper = mapper;
     }
@@ -101,19 +98,9 @@ namespace ShoppingAPI.API.Controllers
     [HttpPost("cart/checkout")]
     public ActionResult Checkout()
     {
-      var username = User.FindFirst(c => c.Type == ClaimTypes.Email).Value;
-      var user = _userManager.Users
-                      .Where(u => u.UserName == username)
-                      .Include(u => u.CartProducts)
-                      .ThenInclude(u => u.Product)
-                      .FirstOrDefault();
+      var userId = User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier).Value;
 
-      if (user.CartProducts.Count() == 0)
-      {
-        throw new EmptyCart();
-      }
-
-      Order orderCreated = _orderRepo.Create(user);
+      Order orderCreated = _appUserRepo.CheckoutCart(userId);
 
       var orderReadDTO = _mapper.Map<OrderReadDTO>(orderCreated);
 
