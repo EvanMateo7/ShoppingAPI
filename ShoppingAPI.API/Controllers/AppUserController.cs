@@ -20,17 +20,14 @@ namespace ShoppingAPI.API.Controllers
   {
     private readonly UserManager<AppUser> _userManager;
     private readonly IAppUserRepository _appUserRepo;
-    private readonly IProductRepository _productRepo;
     private readonly IMapper _mapper;
 
     public AppUserController(UserManager<AppUser> userManager,
                                 IAppUserRepository appUserRepo,
-                                IProductRepository productRepo,
                                 IMapper mapper)
     {
       _userManager = userManager;
       _appUserRepo = appUserRepo;
-      _productRepo = productRepo;
       _mapper = mapper;
     }
 
