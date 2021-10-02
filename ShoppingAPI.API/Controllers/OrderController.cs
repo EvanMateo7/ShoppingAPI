@@ -3,13 +3,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ShoppingAPI.API.Controllers.Mappings;
 using ShoppingAPI.Domain.AggregateRoots.AppUserAggregate;
 using ShoppingAPI.Domain.AggregateRoots.OrderAggregate;
-using ShoppingAPI.Domain.AggregateRoots.ProductAggregate;
 using ShoppingAPI.Domain.ValueObjects;
 
 namespace ShoppingAPI.API.Controllers
@@ -47,10 +48,11 @@ namespace ShoppingAPI.API.Controllers
       return Ok(orderResult);
     }
 
-    // TODO: Use Authorization instead of userId
+    [Authorize]
     [HttpGet]
-    public ActionResult GetOrders(string userId)
+    public ActionResult GetOrders()
     {
+      var userId = User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier).Value;
       var orders = _orderRepo
                       .Find(o => o.UserId == userId)
                       .ToList();
