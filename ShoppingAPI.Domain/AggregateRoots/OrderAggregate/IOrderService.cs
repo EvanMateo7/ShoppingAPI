@@ -7,7 +7,7 @@ namespace ShoppingAPI.Domain.AggregateRoots.OrderAggregate
 {
   public interface IOrderService : IServiceBase<Order>
   {
-    Order CreateOrder(AppUser user);
+    Order CreateOrder(string userId, IEnumerable<ProductQuantity> productQuantities);
 
     Order AddRemoveProductInOrder(Guid orderId, IEnumerable<ProductQuantity> productQuantities);
   }

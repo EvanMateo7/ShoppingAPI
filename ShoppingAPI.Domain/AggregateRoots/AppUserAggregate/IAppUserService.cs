@@ -8,6 +8,8 @@ namespace ShoppingAPI.Domain.AggregateRoots.AppUserAggregate
   {
     Order CheckoutCart(string userId);
 
+    void ClearCart(string userId);
+
     IEnumerable<Cart> AddRemoveProductInCart(string userId, Guid productId, float quantity);
   }
 }

@@ -17,12 +17,17 @@ namespace ShoppingAPI.API.Data.Services
     private readonly ApplicationContext _appContext;
     private readonly UserManager<AppUser> _userManager;
     private readonly IOrderService _orderService;
+    private readonly IProductService _productService;
 
-    public AppUserService(ApplicationContext appContext, UserManager<AppUser> userManager, IOrderService orderRepo) : base(appContext)
+    public AppUserService(ApplicationContext appContext, 
+                          UserManager<AppUser> userManager, 
+                          IOrderService orderRepo,
+                          IProductService productService) : base(appContext)
     {
       _appContext = appContext;
       _userManager = userManager;
       _orderService = orderRepo;
+      _productService = productService;
     }
 
     public Order CheckoutCart(string userId)
@@ -32,13 +37,44 @@ namespace ShoppingAPI.API.Data.Services
                       .Include(u => u.CartProducts)
                       .ThenInclude(u => u.Product)
                       .FirstOrDefault();
-
+      if (user == null)
+      {
+        throw new DoesNotExist<AppUser>(new List<string> { userId });
+      }
       if (user.CartProducts.Count() == 0)
       {
         throw new EmptyCart();
       }
 
-      return _orderService.CreateOrder(user);
+      // Allocate products
+      var productQuantities = user.CartProducts.Select(cp => new ProductQuantity(cp.Product.ProductId, cp.Quantity));
+      _productService.AllocateProducts(productQuantities);
+
+      // Create order
+      Order order;
+      try
+      {
+        order = _orderService.CreateOrder(userId, productQuantities);
+      }
+      catch (Exception)
+      {
+        _productService.DeallocateProducts(productQuantities);
+        throw;
+      }
+
+      // Clear cart
+      ClearCart(user.Id);
+      return order;
+    }
+
+    public void ClearCart(string userId)
+    {
+      var user = _userManager.Users
+                      .Where(u => u.Id == userId)
+                      .Include(u => u.CartProducts)
+                      .FirstOrDefault();
+      _appContext.Cart.RemoveRange(user.CartProducts);
+      _appContext.SaveChanges();
     }
 
     public IEnumerable<Cart> AddRemoveProductInCart(string userId, Guid productId, float quantity)

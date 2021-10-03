@@ -58,9 +58,9 @@ namespace ShoppingAPI
       services.AddScoped<ExceptionHandling>();
 
       // Repositories
-      services.AddScoped<IAppUserService, AppUserService>();
-      services.AddScoped<IOrderService, OrderService>();
       services.AddScoped<IProductService, ProductService>();
+      services.AddScoped<IOrderService, OrderService>();
+      services.AddScoped<IAppUserService, AppUserService>();
 
       services.AddAuthentication()
           .AddGoogle(_optionConfig.ConfigureGoogleOptions);
