@@ -22,11 +22,11 @@ namespace ShoppingAPI.API.Controllers
     private readonly IMapper _mapper;
 
     public ProductController(UserManager<AppUser> userManager,
-                                IProductService productRepo,
+                                IProductService productService,
                                 IMapper mapper)
     {
       _userManager = userManager;
-      _productService = productRepo;
+      _productService = productService;
       _mapper = mapper;
     }
 

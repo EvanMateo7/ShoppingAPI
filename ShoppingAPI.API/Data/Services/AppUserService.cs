@@ -21,12 +21,12 @@ namespace ShoppingAPI.API.Data.Services
 
     public AppUserService(ApplicationContext appContext, 
                           UserManager<AppUser> userManager, 
-                          IOrderService orderRepo,
+                          IOrderService orderService,
                           IProductService productService) : base(appContext)
     {
       _appContext = appContext;
       _userManager = userManager;
-      _orderService = orderRepo;
+      _orderService = orderService;
       _productService = productService;
     }
 
