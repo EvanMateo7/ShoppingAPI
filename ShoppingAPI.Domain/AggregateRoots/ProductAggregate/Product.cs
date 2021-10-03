@@ -39,7 +39,7 @@ namespace ShoppingAPI.Domain.AggregateRoots.ProductAggregate
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-    public byte[] Timestamp { get; set; }
+    public byte[] RowVersion { get; set; }
 
     public ICollection<OrderProduct> OrderProducts { get; set; } = new HashSet<OrderProduct>();
   }

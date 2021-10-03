@@ -16,7 +16,7 @@ namespace ShoppingAPI.API.Data
 
       builder.Property(e => e.Price).HasColumnType("decimal(18, 2)");
 
-      builder.Property(p => p.Timestamp).IsRowVersion();
+      builder.Property(p => p.RowVersion).IsRowVersion();
 
       builder.HasOne(d => d.User)
           .WithMany(p => p.Products)
