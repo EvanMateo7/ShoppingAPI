@@ -9,6 +9,6 @@ namespace ShoppingAPI.Domain.AggregateRoots.OrderAggregate
   {
     Order CreateOrder(string userId, IEnumerable<ProductQuantity> productQuantities);
 
-    Order AddRemoveProductInOrder(Guid orderId, IEnumerable<ProductQuantity> productQuantities);
+    Order AddRemoveProductsInOrder(Guid orderId, IEnumerable<ProductQuantity> productQuantities);
   }
 }

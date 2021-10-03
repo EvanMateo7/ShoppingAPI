@@ -88,7 +88,6 @@ namespace ShoppingAPI.API.Controllers
       return CreatedAtAction(nameof(GetUserCart), cartResult);
     }
 
-    // TODO: Test for concurrency
     [Authorize]
     [HttpPost("cart/checkout")]
     public ActionResult Checkout()
@@ -101,7 +100,7 @@ namespace ShoppingAPI.API.Controllers
 
       return CreatedAtAction(nameof(OrderController.GetOrderById),
                               nameof(OrderController).Replace(nameof(Controller), string.Empty),
-                              new { id = orderReadDTO.OrderId },
+                              new { orderId = orderReadDTO.OrderId },
                               orderReadDTO);
     }
   }

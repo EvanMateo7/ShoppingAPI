@@ -46,25 +46,12 @@ namespace ShoppingAPI.API.Data.Services
         throw new EmptyCart();
       }
 
-      // Allocate products
       var productQuantities = user.CartProducts.Select(cp => new ProductQuantity(cp.Product.ProductId, cp.Quantity));
-      _productService.AllocateProducts(productQuantities);
-
-      // Create order
-      Order order;
-      try
-      {
-        order = _orderService.CreateOrder(userId, productQuantities);
-      }
-      catch (Exception)
-      {
-        _productService.DeallocateProducts(productQuantities);
-        throw;
-      }
+      var newOrder = _orderService.CreateOrder(userId, productQuantities);
 
       // Clear cart
       ClearCart(user.Id);
-      return order;
+      return newOrder;
     }
 
     public void ClearCart(string userId)

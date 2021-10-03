@@ -14,22 +14,38 @@ namespace ShoppingAPI.API.Data.Services
   public class OrderService : ServiceBase<Order>, IOrderService
   {
     private readonly ApplicationContext _appContext;
+    private readonly IProductService _productService;
 
-    public OrderService(ApplicationContext appContext) : base(appContext)
+    public OrderService(ApplicationContext appContext, IProductService productService) : base(appContext)
     {
       _appContext = appContext;
+      _productService = productService;
     }
 
     public Order CreateOrder(string userId, IEnumerable<ProductQuantity> productQuantities)
     {
       var newOrder = new Order() { UserId = userId };
       _appContext.Orders.Add(newOrder);
-      newOrder = AddRemoveProductInOrder(newOrder.OrderId, productQuantities);
       
-      return newOrder;
+      return AddRemoveProductsInOrder(newOrder.OrderId, productQuantities);
     }
 
-    public Order AddRemoveProductInOrder(Guid orderId, IEnumerable<ProductQuantity> productQuantities)
+    public Order AddRemoveProductsInOrder(Guid orderId, IEnumerable<ProductQuantity> productQuantities)
+    {
+      _productService.AllocateProducts(productQuantities);
+
+      try
+      {
+        return UpdateOrderProductsQuantities(orderId, productQuantities);
+      }
+      catch (Exception)
+      {
+        _productService.DeallocateProducts(productQuantities);
+        throw;
+      }
+    }
+
+    private Order UpdateOrderProductsQuantities(Guid orderId, IEnumerable<ProductQuantity> productQuantities)
     {
       // Find existing or newly added order
       var order = _appContext.Orders
