@@ -49,11 +49,10 @@ namespace ShoppingAPI.API.Areas.Identity
                     new Claim(ClaimTypes.AuthenticationMethod, loginProvider)
                 };
 
-        // Add external claims
+        // Add all external claims
         var claims = externalLoginInfo
                         .Principal
-                        .Claims
-                        .Where(c => c.Type.StartsWith("urn:"));
+                        .Claims.AsEnumerable<Claim>();
         var allExternalClaims = externalClaims.Concat(claims);
         await SignInWithClaimsAsync(user, authProps, allExternalClaims);
       }
