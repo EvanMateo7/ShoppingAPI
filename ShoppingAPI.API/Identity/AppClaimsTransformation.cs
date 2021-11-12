@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace ShoppingAPI.API.Areas.Identity
+namespace ShoppingAPI.API.Identity
 {
   public class AppClaimsTransformation : IClaimsTransformation
   {

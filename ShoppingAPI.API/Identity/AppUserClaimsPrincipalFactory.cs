@@ -4,7 +4,7 @@ using ShoppingAPI.Domain.AggregateRoots.AppUserAggregate;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace ShoppingAPI.API.Areas.Identity
+namespace ShoppingAPI.API.Identity
 {
   public class AppUserClaimsPrincipalFactory : UserClaimsPrincipalFactory<AppUser>
   {

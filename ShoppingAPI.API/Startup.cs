@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using ShoppingAPI.API.Areas.Identity;
+using ShoppingAPI.API.Identity;
 using ShoppingAPI.API.Data;
 using ShoppingAPI.API.Data.Services;
 using ShoppingAPI.API.Pages;

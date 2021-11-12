@@ -8,7 +8,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace ShoppingAPI.API.Areas.Identity
+namespace ShoppingAPI.API.Identity
 {
   public class AppSignInManager<TUser> : SignInManager<TUser> where TUser : class
   {
