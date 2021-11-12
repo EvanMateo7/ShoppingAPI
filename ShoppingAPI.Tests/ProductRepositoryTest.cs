@@ -33,7 +33,7 @@ namespace ShoppingAPI.Tests
     [Fact]
     public void Create()
     {
-      var newProduct = new Product() { Name = "ass", Quantity = 1, Price = 2 };
+      var newProduct = new Product() { Name = "testproduct", Quantity = 1, Price = 2 };
       _fixture.ProductService.Create(newProduct);
       var queryProduct = _fixture.Context.Products.Where(p => p.Name == newProduct.Name).FirstOrDefault();
 
