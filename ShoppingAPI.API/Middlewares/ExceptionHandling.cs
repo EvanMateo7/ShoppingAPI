@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ShoppingAPI.API.Controllers;
-using ShoppingAPI.API.Data.Services.Exceptions;
+using ShoppingAPI.Database.Data.Services.Exceptions;
 
 namespace ShoppingAPI.API.Middlewares
 {

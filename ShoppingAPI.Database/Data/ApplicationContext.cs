@@ -4,7 +4,7 @@ using ShoppingAPI.Domain.AggregateRoots.AppUserAggregate;
 using ShoppingAPI.Domain.AggregateRoots.OrderAggregate;
 using ShoppingAPI.Domain.AggregateRoots.ProductAggregate;
 
-namespace ShoppingAPI.API.Data
+namespace ShoppingAPI.Database.Data
 {
   public class ApplicationContext : IdentityDbContext<AppUser>
   {

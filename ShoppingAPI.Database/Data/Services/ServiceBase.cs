@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using ShoppingAPI.Domain.AggregateRoots;
 
-namespace ShoppingAPI.API.Data.Services
+namespace ShoppingAPI.Database.Data.Services
 {
   public abstract class ServiceBase<T> : IServiceBase<T> where T : class, IAggregateRoot
   {

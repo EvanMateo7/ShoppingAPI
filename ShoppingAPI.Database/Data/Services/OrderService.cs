@@ -2,14 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
-using ShoppingAPI.API.Data.Services.Exceptions;
+using ShoppingAPI.Database.Data.Services.Exceptions;
 using ShoppingAPI.Domain.AggregateRoots.AppUserAggregate;
 using ShoppingAPI.Domain.AggregateRoots.OrderAggregate;
 using ShoppingAPI.Domain.AggregateRoots.ProductAggregate;
 using ShoppingAPI.Domain.Exceptions;
 using ShoppingAPI.Domain.ValueObjects;
 
-namespace ShoppingAPI.API.Data.Services
+namespace ShoppingAPI.Database.Data.Services
 {
   public class OrderService : ServiceBase<Order>, IOrderService
   {

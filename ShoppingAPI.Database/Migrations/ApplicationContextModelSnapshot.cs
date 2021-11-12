@@ -3,22 +3,20 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using ShoppingAPI.API.Data;
+using ShoppingAPI.Database.Data;
 
 namespace ShoppingAPI.API.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20210908205528_Add-Index-ProductId")]
-    partial class AddIndexProductId
+    partial class ApplicationContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.9")
+                .HasAnnotation("ProductVersion", "5.0.10")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -156,7 +154,7 @@ namespace ShoppingAPI.API.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("ShoppingAPI.API.Domain.AppUser", b =>
+            modelBuilder.Entity("ShoppingAPI.Domain.AggregateRoots.AppUserAggregate.AppUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -227,7 +225,32 @@ namespace ShoppingAPI.API.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("ShoppingAPI.API.Domain.Order", b =>
+            modelBuilder.Entity("ShoppingAPI.Domain.AggregateRoots.AppUserAggregate.Cart", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<float>("Quantity")
+                        .HasColumnType("real");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex(new[] { "ProductId" }, "IX_Cart_ProductId");
+
+                    b.HasIndex(new[] { "UserId" }, "IX_Cart_UserId");
+
+                    b.ToTable("Cart");
+                });
+
+            modelBuilder.Entity("ShoppingAPI.Domain.AggregateRoots.OrderAggregate.Order", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -240,17 +263,25 @@ namespace ShoppingAPI.API.Migrations
                     b.Property<DateTime?>("FullfilledAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid>("OrderId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("newid()");
+
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OrderId")
+                        .IsUnique();
 
                     b.HasIndex(new[] { "UserId" }, "IX_Orders_UserId");
 
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("ShoppingAPI.API.Domain.OrderProduct", b =>
+            modelBuilder.Entity("ShoppingAPI.Domain.AggregateRoots.OrderAggregate.OrderProduct", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -278,7 +309,7 @@ namespace ShoppingAPI.API.Migrations
                     b.ToTable("OrderProducts");
                 });
 
-            modelBuilder.Entity("ShoppingAPI.API.Domain.Product", b =>
+            modelBuilder.Entity("ShoppingAPI.Domain.AggregateRoots.ProductAggregate.Product", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -307,6 +338,11 @@ namespace ShoppingAPI.API.Migrations
                     b.Property<float>("Quantity")
                         .HasColumnType("real");
 
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
@@ -331,7 +367,7 @@ namespace ShoppingAPI.API.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("ShoppingAPI.API.Domain.AppUser", null)
+                    b.HasOne("ShoppingAPI.Domain.AggregateRoots.AppUserAggregate.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -340,7 +376,7 @@ namespace ShoppingAPI.API.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("ShoppingAPI.API.Domain.AppUser", null)
+                    b.HasOne("ShoppingAPI.Domain.AggregateRoots.AppUserAggregate.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -355,7 +391,7 @@ namespace ShoppingAPI.API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ShoppingAPI.API.Domain.AppUser", null)
+                    b.HasOne("ShoppingAPI.Domain.AggregateRoots.AppUserAggregate.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -364,31 +400,48 @@ namespace ShoppingAPI.API.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("ShoppingAPI.API.Domain.AppUser", null)
+                    b.HasOne("ShoppingAPI.Domain.AggregateRoots.AppUserAggregate.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ShoppingAPI.API.Domain.Order", b =>
+            modelBuilder.Entity("ShoppingAPI.Domain.AggregateRoots.AppUserAggregate.Cart", b =>
                 {
-                    b.HasOne("ShoppingAPI.API.Domain.AppUser", "User")
+                    b.HasOne("ShoppingAPI.Domain.AggregateRoots.ProductAggregate.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ShoppingAPI.Domain.AggregateRoots.AppUserAggregate.AppUser", "User")
+                        .WithMany("CartProducts")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Product");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("ShoppingAPI.Domain.AggregateRoots.OrderAggregate.Order", b =>
+                {
+                    b.HasOne("ShoppingAPI.Domain.AggregateRoots.AppUserAggregate.AppUser", "User")
                         .WithMany("Orders")
                         .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("ShoppingAPI.API.Domain.OrderProduct", b =>
+            modelBuilder.Entity("ShoppingAPI.Domain.AggregateRoots.OrderAggregate.OrderProduct", b =>
                 {
-                    b.HasOne("ShoppingAPI.API.Domain.Order", "Order")
+                    b.HasOne("ShoppingAPI.Domain.AggregateRoots.OrderAggregate.Order", "Order")
                         .WithMany("OrderProducts")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ShoppingAPI.API.Domain.Product", "Product")
+                    b.HasOne("ShoppingAPI.Domain.AggregateRoots.ProductAggregate.Product", "Product")
                         .WithMany("OrderProducts")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -399,28 +452,30 @@ namespace ShoppingAPI.API.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("ShoppingAPI.API.Domain.Product", b =>
+            modelBuilder.Entity("ShoppingAPI.Domain.AggregateRoots.ProductAggregate.Product", b =>
                 {
-                    b.HasOne("ShoppingAPI.API.Domain.AppUser", "User")
+                    b.HasOne("ShoppingAPI.Domain.AggregateRoots.AppUserAggregate.AppUser", "User")
                         .WithMany("Products")
                         .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("ShoppingAPI.API.Domain.AppUser", b =>
+            modelBuilder.Entity("ShoppingAPI.Domain.AggregateRoots.AppUserAggregate.AppUser", b =>
                 {
+                    b.Navigation("CartProducts");
+
                     b.Navigation("Orders");
 
                     b.Navigation("Products");
                 });
 
-            modelBuilder.Entity("ShoppingAPI.API.Domain.Order", b =>
+            modelBuilder.Entity("ShoppingAPI.Domain.AggregateRoots.OrderAggregate.Order", b =>
                 {
                     b.Navigation("OrderProducts");
                 });
 
-            modelBuilder.Entity("ShoppingAPI.API.Domain.Product", b =>
+            modelBuilder.Entity("ShoppingAPI.Domain.AggregateRoots.ProductAggregate.Product", b =>
                 {
                     b.Navigation("OrderProducts");
                 });

@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using ShoppingAPI.Domain.AggregateRoots.AppUserAggregate;
 
-namespace ShoppingAPI.API.Data
+namespace ShoppingAPI.Database.Data
 {
   public class CartEntityTypeConfiguration : IEntityTypeConfiguration<Cart>
   {

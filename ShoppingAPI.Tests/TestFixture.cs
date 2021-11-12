@@ -4,10 +4,10 @@ using System.Linq;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using ShoppingAPI.API.Data;
+using ShoppingAPI.Database.Data;
 using ShoppingAPI.Domain.AggregateRoots.AppUserAggregate;
 using ShoppingAPI.Domain.AggregateRoots.ProductAggregate;
-using ShoppingAPI.API.Data.Services;
+using ShoppingAPI.Database.Data.Services;
 
 namespace ShoppingAPI.Tests
 {

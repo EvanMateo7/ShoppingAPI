@@ -5,13 +5,13 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using ShoppingAPI.API.Data;
+using ShoppingAPI.Database.Data;
 
 namespace ShoppingAPI.API.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20210917120938_Add-Timestamp-Product")]
-    partial class AddTimestampProduct
+    [Migration("20210919050618_Add-Cart-Quantity")]
+    partial class AddCartQuantity
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -236,6 +236,9 @@ namespace ShoppingAPI.API.Migrations
 
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
+
+                    b.Property<float>("Quantity")
+                        .HasColumnType("real");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");

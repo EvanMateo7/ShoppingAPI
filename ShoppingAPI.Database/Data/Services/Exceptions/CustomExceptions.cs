@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using ShoppingAPI.Domain.AggregateRoots;
 using ShoppingAPI.Domain.ValueObjects;
 
-namespace ShoppingAPI.API.Data.Services.Exceptions
+namespace ShoppingAPI.Database.Data.Services.Exceptions
 {
   public class DoesNotExist : Exception
   {

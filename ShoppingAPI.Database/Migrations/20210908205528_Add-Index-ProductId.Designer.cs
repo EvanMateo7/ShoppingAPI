@@ -5,13 +5,13 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using ShoppingAPI.API.Data;
+using ShoppingAPI.Database.Data;
 
 namespace ShoppingAPI.API.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20210919050618_Add-Cart-Quantity")]
-    partial class AddCartQuantity
+    [Migration("20210908205528_Add-Index-ProductId")]
+    partial class AddIndexProductId
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -227,31 +227,6 @@ namespace ShoppingAPI.API.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("ShoppingAPI.API.Domain.Cart", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<float>("Quantity")
-                        .HasColumnType("real");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex(new[] { "ProductId" }, "IX_Cart_ProductId");
-
-                    b.HasIndex(new[] { "UserId" }, "IX_Cartasss_UserId");
-
-                    b.ToTable("Cart");
-                });
-
             modelBuilder.Entity("ShoppingAPI.API.Domain.Order", b =>
                 {
                     b.Property<int>("Id")
@@ -265,18 +240,10 @@ namespace ShoppingAPI.API.Migrations
                     b.Property<DateTime?>("FullfilledAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("OrderId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("newid()");
-
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("OrderId")
-                        .IsUnique();
 
                     b.HasIndex(new[] { "UserId" }, "IX_Orders_UserId");
 
@@ -339,11 +306,6 @@ namespace ShoppingAPI.API.Migrations
 
                     b.Property<float>("Quantity")
                         .HasColumnType("real");
-
-                    b.Property<byte[]>("Timestamp")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("rowversion");
 
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
@@ -409,23 +371,6 @@ namespace ShoppingAPI.API.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ShoppingAPI.API.Domain.Cart", b =>
-                {
-                    b.HasOne("ShoppingAPI.API.Domain.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ShoppingAPI.API.Domain.AppUser", "User")
-                        .WithMany("CartProducts")
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("Product");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("ShoppingAPI.API.Domain.Order", b =>
                 {
                     b.HasOne("ShoppingAPI.API.Domain.AppUser", "User")
@@ -465,8 +410,6 @@ namespace ShoppingAPI.API.Migrations
 
             modelBuilder.Entity("ShoppingAPI.API.Domain.AppUser", b =>
                 {
-                    b.Navigation("CartProducts");
-
                     b.Navigation("Orders");
 
                     b.Navigation("Products");

@@ -5,13 +5,13 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using ShoppingAPI.API.Data;
+using ShoppingAPI.Database.Data;
 
 namespace ShoppingAPI.API.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20210908210658_Add-OrderId-With-Index")]
-    partial class AddOrderIdWithIndex
+    [Migration("20210904165619_ProductID")]
+    partial class ProductID
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -240,18 +240,10 @@ namespace ShoppingAPI.API.Migrations
                     b.Property<DateTime?>("FullfilledAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("OrderId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("newid()");
-
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("OrderId")
-                        .IsUnique();
 
                     b.HasIndex(new[] { "UserId" }, "IX_Orders_UserId");
 
@@ -319,9 +311,6 @@ namespace ShoppingAPI.API.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ProductId")
-                        .IsUnique();
 
                     b.HasIndex(new[] { "UserId" }, "IX_Products_UserId");
 

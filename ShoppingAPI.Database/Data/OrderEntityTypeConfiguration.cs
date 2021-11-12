@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using ShoppingAPI.Domain.AggregateRoots.OrderAggregate;
 
-namespace ShoppingAPI.API.Data
+namespace ShoppingAPI.Database.Data
 {
   public class OrderEntityTypeConfiguration : IEntityTypeConfiguration<Order>
   {

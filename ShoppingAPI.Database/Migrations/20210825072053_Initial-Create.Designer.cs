@@ -5,13 +5,13 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using ShoppingAPI.API.Data;
+using ShoppingAPI.Database.Data;
 
 namespace ShoppingAPI.API.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20210916235721_AddCart")]
-    partial class AddCart
+    [Migration("20210825072053_Initial-Create")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -156,7 +156,7 @@ namespace ShoppingAPI.API.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("ShoppingAPI.API.Domain.AppUser", b =>
+            modelBuilder.Entity("ShoppingAPI.API.Models.AppUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -227,29 +227,7 @@ namespace ShoppingAPI.API.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("ShoppingAPI.API.Domain.Cart", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex(new[] { "ProductId" }, "IX_Cart_ProductId");
-
-                    b.HasIndex(new[] { "UserId" }, "IX_Cartasss_UserId");
-
-                    b.ToTable("Cart");
-                });
-
-            modelBuilder.Entity("ShoppingAPI.API.Domain.Order", b =>
+            modelBuilder.Entity("ShoppingAPI.API.Models.Order", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -262,25 +240,17 @@ namespace ShoppingAPI.API.Migrations
                     b.Property<DateTime?>("FullfilledAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("OrderId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("newid()");
-
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("OrderId")
-                        .IsUnique();
 
                     b.HasIndex(new[] { "UserId" }, "IX_Orders_UserId");
 
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("ShoppingAPI.API.Domain.OrderProduct", b =>
+            modelBuilder.Entity("ShoppingAPI.API.Models.OrderProduct", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -308,7 +278,7 @@ namespace ShoppingAPI.API.Migrations
                     b.ToTable("OrderProducts");
                 });
 
-            modelBuilder.Entity("ShoppingAPI.API.Domain.Product", b =>
+            modelBuilder.Entity("ShoppingAPI.API.Models.Product", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -323,16 +293,10 @@ namespace ShoppingAPI.API.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(69)
-                        .HasColumnType("nvarchar(69)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
-
-                    b.Property<Guid>("ProductId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("newid()");
 
                     b.Property<float>("Quantity")
                         .HasColumnType("real");
@@ -341,9 +305,6 @@ namespace ShoppingAPI.API.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ProductId")
-                        .IsUnique();
 
                     b.HasIndex(new[] { "UserId" }, "IX_Products_UserId");
 
@@ -361,7 +322,7 @@ namespace ShoppingAPI.API.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("ShoppingAPI.API.Domain.AppUser", null)
+                    b.HasOne("ShoppingAPI.API.Models.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -370,7 +331,7 @@ namespace ShoppingAPI.API.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("ShoppingAPI.API.Domain.AppUser", null)
+                    b.HasOne("ShoppingAPI.API.Models.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -385,7 +346,7 @@ namespace ShoppingAPI.API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ShoppingAPI.API.Domain.AppUser", null)
+                    b.HasOne("ShoppingAPI.API.Models.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -394,48 +355,31 @@ namespace ShoppingAPI.API.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("ShoppingAPI.API.Domain.AppUser", null)
+                    b.HasOne("ShoppingAPI.API.Models.AppUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ShoppingAPI.API.Domain.Cart", b =>
+            modelBuilder.Entity("ShoppingAPI.API.Models.Order", b =>
                 {
-                    b.HasOne("ShoppingAPI.API.Domain.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ShoppingAPI.API.Domain.AppUser", "User")
-                        .WithMany("CartProducts")
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("Product");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("ShoppingAPI.API.Domain.Order", b =>
-                {
-                    b.HasOne("ShoppingAPI.API.Domain.AppUser", "User")
+                    b.HasOne("ShoppingAPI.API.Models.AppUser", "User")
                         .WithMany("Orders")
                         .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("ShoppingAPI.API.Domain.OrderProduct", b =>
+            modelBuilder.Entity("ShoppingAPI.API.Models.OrderProduct", b =>
                 {
-                    b.HasOne("ShoppingAPI.API.Domain.Order", "Order")
+                    b.HasOne("ShoppingAPI.API.Models.Order", "Order")
                         .WithMany("OrderProducts")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ShoppingAPI.API.Domain.Product", "Product")
+                    b.HasOne("ShoppingAPI.API.Models.Product", "Product")
                         .WithMany("OrderProducts")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -446,30 +390,28 @@ namespace ShoppingAPI.API.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("ShoppingAPI.API.Domain.Product", b =>
+            modelBuilder.Entity("ShoppingAPI.API.Models.Product", b =>
                 {
-                    b.HasOne("ShoppingAPI.API.Domain.AppUser", "User")
+                    b.HasOne("ShoppingAPI.API.Models.AppUser", "User")
                         .WithMany("Products")
                         .HasForeignKey("UserId");
 
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("ShoppingAPI.API.Domain.AppUser", b =>
+            modelBuilder.Entity("ShoppingAPI.API.Models.AppUser", b =>
                 {
-                    b.Navigation("CartProducts");
-
                     b.Navigation("Orders");
 
                     b.Navigation("Products");
                 });
 
-            modelBuilder.Entity("ShoppingAPI.API.Domain.Order", b =>
+            modelBuilder.Entity("ShoppingAPI.API.Models.Order", b =>
                 {
                     b.Navigation("OrderProducts");
                 });
 
-            modelBuilder.Entity("ShoppingAPI.API.Domain.Product", b =>
+            modelBuilder.Entity("ShoppingAPI.API.Models.Product", b =>
                 {
                     b.Navigation("OrderProducts");
                 });
