@@ -21,7 +21,7 @@ namespace ShoppingAPI.API.Identity
     {
       // Clone current identity
       var clone = principal.Clone();
-      List<Claim> claims = new List<Claim> { new Claim("ClaimFromClaimsTransformer", "123") };
+      List<Claim> claims = new List<Claim> { new Claim("ClaimFromClaimsTransformer", "TransformAsync") };
       var newIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
       clone.AddIdentity(newIdentity);
 
