@@ -16,7 +16,7 @@ namespace ShoppingAPI.API.Data
           .WithMany()
           .HasForeignKey(d => d.ProductId);
 
-      builder.HasIndex(e => e.UserId, "IX_Cartasss_UserId");
+      builder.HasIndex(e => e.UserId, "IX_Cart_UserId");
 
       builder.HasIndex(e => e.ProductId, "IX_Cart_ProductId");
     }
