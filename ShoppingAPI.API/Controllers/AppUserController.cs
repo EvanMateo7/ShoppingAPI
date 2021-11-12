@@ -7,10 +7,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ShoppingAPI.API.Controllers.Mappings;
-using ShoppingAPI.API.Data.Repositories.Exceptions;
 using ShoppingAPI.Domain.AggregateRoots.AppUserAggregate;
 using ShoppingAPI.Domain.AggregateRoots.OrderAggregate;
-using ShoppingAPI.Domain.AggregateRoots.ProductAggregate;
 
 namespace ShoppingAPI.API.Controllers
 {
@@ -19,21 +17,15 @@ namespace ShoppingAPI.API.Controllers
   public class AppUserController : ControllerBase
   {
     private readonly UserManager<AppUser> _userManager;
-    private readonly IAppUserRepository _appUserRepo;
-    private readonly IOrderRepository _orderRepo;
-    private readonly IProductRepository _productRepo;
+    private readonly IAppUserService _appUserService;
     private readonly IMapper _mapper;
 
     public AppUserController(UserManager<AppUser> userManager,
-                                IAppUserRepository appUserRepo,
-                                IOrderRepository orderRepo,
-                                IProductRepository productRepo,
+                                IAppUserService appUserService,
                                 IMapper mapper)
     {
       _userManager = userManager;
-      _appUserRepo = appUserRepo;
-      _orderRepo = orderRepo;
-      _productRepo = productRepo;
+      _appUserService = appUserService;
       _mapper = mapper;
     }
 
@@ -87,7 +79,7 @@ namespace ShoppingAPI.API.Controllers
                       .ThenInclude(cp => cp.Product)
                       .FirstOrDefault();
 
-      IEnumerable<Cart> cart = _appUserRepo.AddRemoveProductInCart(user.Id,
+      IEnumerable<Cart> cart = _appUserService.AddRemoveProductInCart(user.Id,
                                             orderProductCreate.ProductId,
                                             orderProductCreate.Quantity);
 
@@ -96,30 +88,19 @@ namespace ShoppingAPI.API.Controllers
       return CreatedAtAction(nameof(GetUserCart), cartResult);
     }
 
-    // TODO: Test for concurrency
     [Authorize]
     [HttpPost("cart/checkout")]
     public ActionResult Checkout()
     {
-      var username = User.FindFirst(c => c.Type == ClaimTypes.Email).Value;
-      var user = _userManager.Users
-                      .Where(u => u.UserName == username)
-                      .Include(u => u.CartProducts)
-                      .ThenInclude(u => u.Product)
-                      .FirstOrDefault();
+      var userId = User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier).Value;
 
-      if (user.CartProducts.Count() == 0)
-      {
-        throw new EmptyCart();
-      }
-
-      Order orderCreated = _orderRepo.Create(user);
+      Order orderCreated = _appUserService.CheckoutCart(userId);
 
       var orderReadDTO = _mapper.Map<OrderReadDTO>(orderCreated);
 
       return CreatedAtAction(nameof(OrderController.GetOrderById),
                               nameof(OrderController).Replace(nameof(Controller), string.Empty),
-                              new { id = orderReadDTO.OrderId },
+                              new { orderId = orderReadDTO.OrderId },
                               orderReadDTO);
     }
   }

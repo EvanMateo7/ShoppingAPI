@@ -3,39 +3,38 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ShoppingAPI.API.Controllers.Mappings;
 using ShoppingAPI.Domain.AggregateRoots.AppUserAggregate;
 using ShoppingAPI.Domain.AggregateRoots.OrderAggregate;
-using ShoppingAPI.Domain.AggregateRoots.ProductAggregate;
 using ShoppingAPI.Domain.ValueObjects;
 
 namespace ShoppingAPI.API.Controllers
 {
   [ApiController]
+  [Authorize]
   [Route("api/order")]
   public class OrderController : ControllerBase
   {
-    private readonly UserManager<AppUser> _userManager;
-    private readonly IOrderRepository _orderRepo;
+    private readonly IOrderService _orderService;
     private readonly IMapper _mapper;
 
-    public OrderController(UserManager<AppUser> userManager,
-                                IOrderRepository orderRepo,
-                                IMapper mapper)
+    public OrderController(IOrderService orderService, IMapper mapper)
     {
-      _userManager = userManager;
-      _orderRepo = orderRepo;
+      _orderService = orderService;
       _mapper = mapper;
     }
 
-    [HttpGet("{id}")]
-    public ActionResult GetOrderById(Guid id)
+    [HttpGet("{orderId}")]
+    public ActionResult GetOrderById(Guid orderId)
     {
-      var order = _orderRepo
-                      .Find(o => o.OrderId == id)
+      var userId = User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier).Value;
+      var order = _orderService
+                      .Find(o => o.OrderId == orderId && o.UserId == userId)
                       .FirstOrDefault();
 
       if (order == null)
@@ -47,11 +46,11 @@ namespace ShoppingAPI.API.Controllers
       return Ok(orderResult);
     }
 
-    // TODO: Use Authorization instead of userId
     [HttpGet]
-    public ActionResult GetOrders(string userId)
+    public ActionResult GetOrders()
     {
-      var orders = _orderRepo
+      var userId = User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier).Value;
+      var orders = _orderService
                       .Find(o => o.UserId == userId)
                       .ToList();
 
@@ -62,11 +61,21 @@ namespace ShoppingAPI.API.Controllers
     [HttpPost("{orderId}")]
     public ActionResult AddRemoveProduct(Guid orderId, ProductQuantity productQuantity)
     {
-      var order = _orderRepo.AddRemoveProductInOrder(orderId, new List<ProductQuantity> { productQuantity });
+      var userId = User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier).Value;
+      var order = _orderService
+                      .Find(o => o.OrderId == orderId && o.UserId == userId)
+                      .FirstOrDefault();
+
+      if (order == null)
+      {
+        return NotFound();
+      }
+      
+      order = _orderService.AddRemoveProductsInOrder(orderId, new List<ProductQuantity> { productQuantity });
 
       var orderReadDTO = _mapper.Map<OrderReadDTO>(order);
 
-      return CreatedAtAction(nameof(GetOrderById), new { id = orderReadDTO.OrderId }, orderReadDTO);
+      return CreatedAtAction(nameof(GetOrderById), new { orderId = orderReadDTO.OrderId }, orderReadDTO);
     }
   }
 }

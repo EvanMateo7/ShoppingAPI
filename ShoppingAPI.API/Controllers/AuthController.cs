@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using ShoppingAPI.API.Areas.Identity;
+using ShoppingAPI.API.Identity;
 using ShoppingAPI.Domain.AggregateRoots.AppUserAggregate;
 using System.Linq;
 using System.Security.Claims;

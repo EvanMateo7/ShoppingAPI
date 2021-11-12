@@ -4,17 +4,17 @@ using System.Linq;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using ShoppingAPI.API.Data;
+using ShoppingAPI.Database.Data;
 using ShoppingAPI.Domain.AggregateRoots.AppUserAggregate;
 using ShoppingAPI.Domain.AggregateRoots.ProductAggregate;
-using ShoppingAPI.API.Data.Repositories;
+using ShoppingAPI.Database.Data.Services;
 
 namespace ShoppingAPI.Tests
 {
   public class TestFixture : IDisposable
   {
     public ApplicationContext Context { get; init; }
-    public ProductRepository ProductRepo { get; init; }
+    public ProductService ProductService { get; init; }
 
     public IEnumerable<AppUser> Users { get; private set; }
     public IEnumerable<Product> Products { get; private set; }
@@ -30,7 +30,7 @@ namespace ShoppingAPI.Tests
         .Options;
 
       Context = new ApplicationContext(options);
-      ProductRepo = new ProductRepository(Context);
+      ProductService = new ProductService(Context);
       
       Context.Database.EnsureCreated();
     }
