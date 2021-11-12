@@ -17,18 +17,18 @@ namespace ShoppingAPI.API.Areas.Identity
     protected override async Task<ClaimsIdentity> GenerateClaimsAsync(AppUser user)
     {
       var identity = await base.GenerateClaimsAsync(user);
-      identity.AddClaim(new Claim("ClaimFromPrincipalFactory", "123"));
+      identity.AddClaim(new Claim("ClaimFromPrincipalFactory", "GenerateClaimsAsync"));
       return identity;
     }
 
     public async override Task<ClaimsPrincipal> CreateAsync(AppUser user)
     {
-      var id = await GenerateClaimsAsync(user);
+      var identity = await GenerateClaimsAsync(user);
       if (user != null)
       {
-        id.AddClaim(new Claim("ClaimFromPrincipalFactory", "123"));
+        identity.AddClaim(new Claim("ClaimFromPrincipalFactory", "CreateAsync"));
       }
-      return new ClaimsPrincipal(id);
+      return new ClaimsPrincipal(identity);
     }
   }
 }

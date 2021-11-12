@@ -38,7 +38,7 @@ namespace ShoppingAPI.API.Pages
             {
                 var claims = new List<Claim>
                     {
-                        new Claim(ClaimTypes.Role, "superadmin")
+                        new Claim(ClaimTypes.Role, "user")
                     };
                 var appIdentity = new ClaimsIdentity(claims);
 
